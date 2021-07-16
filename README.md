@@ -1,11 +1,2 @@
-# TARGET
-Web application for the Cancer Research UK TARGET project
-
-- Angular 1.6
-- jQuery with dataTables
-- Java JSP API using Tomcat
-- SQL Server database
-
-Currently running on Azure infrastructure provided by CRUK.
-
-Push to this repo to deploy.
+# eTARGET
+eTARGET is a digital solution which was developed by the digital Experimental Cancer Medicine Team (digital ECMT) to support decision making by the Molecular Tumour Board for the TARGET[1] program run by The Christie NHS Foundation Trust.  It integrates the clinical data, Next Generation Sequencing data and immunohistochemistry results. 
