@@ -163,13 +163,14 @@ Configurations are split into three config files:
   	  \item \verb|data.tumour| whether tumour data is available
   	  \item \verb|page.additional_reports| display additional reports tab
   	  \item \verb|page.ihc| display IHC tab
-  	  \item \verb|page.fmblood| display FM Bloods tab
-  	  \item |verb|page.fmtumour| display FM Tumour tab
+  	  \item \verb|page.fmblood| display FM Bloods tab (the FM data source needs to be set-up in the \verb|CONCEPT_DATASOURCES| column \verb|panel_name| with the name `foundationmedicine')
+  	  \item |verb|page.fmtumour| display FM Tumour tab (the FM data source needs to be set-up in the \verb|CONCEPT_DATASOURCES| column \verb|panel_name| with the name `foundationmedicine')
   	  \item \verb|page.tumourngs| display Tumour NGS tab
   	  \item \verb|page.ctdnangs| display CtDNA NGS tab
   	  \item \verb|page.ctdnaexploratory| display CtDNA Exploratory tab
   	  \item \verb|page.pdxcdx| display PDX CDX tab
-  	  \item \verb|page.name| comma separated list of providers as found in the eTarget database table \verb|CONCEPT_DATASOURCES| column \verb|panel_name|
+  	  \item \verb|page.name| comma separated list of providers as found in the eTarget database table \verb|CONCEPT_DATASOURCES| column \verb|panel_name|. 
+  	  Note these are the generic providers, FM Tumour and  ctDNA providers are not configures this way, just turned on with the boolean above.
   	  \item \verb|page.name.[name1]| name which should be displayed for this provider
   	  \item \verb|page.name.[name1].blood| whether blood tab should be displayed
   	  \item \verb|page.name.[name1].tumour| whether tumour tab should be displayed
