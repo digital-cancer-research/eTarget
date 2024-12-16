@@ -36,10 +36,10 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.digitalecmt.etarget.API;
 import org.digitalecmt.etarget.config.ConfigDataSources;
 import org.digitalecmt.etarget.config.TargetConfiguration;
@@ -55,7 +55,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.google.gson.Gson;
 
 @Path("/GenomicsData")
-public class GenomicsData extends Application {
+public class GenomicsData {
 	
 	private static final Logger log = Logger.getLogger(GenomicsData.class.getName());
 	private ApplicationContext appContext;
@@ -70,6 +70,7 @@ public class GenomicsData extends Application {
 	@GET
 	public Response getFMTumour(@HeaderParam("x-ms-client-principal-name") String loggedInUserID , @PathParam("person_id") String personID, 
 			@PathParam("source_id") String sourceID, @PathParam("type") String type) {
+		loggedInUserID = StringEscapeUtils.unescapeHtml4(loggedInUserID);
 		if (!new API().isUserPermittedEndpoint(loggedInUserID, "TumourNGS")) {
 			// Stop the request if user doesn't have permission for this API or web
 			// component
@@ -85,11 +86,11 @@ public class GenomicsData extends Application {
 			if(type.trim().toLowerCase().compareTo("tumour")==0) {
 				log.info("type tumour");
 				samples = tumour.getTumourSamplesForPerson(sourceID, person_id);
-				log.info("samples " + samples.size());
+//				log.info("samples " + samples.size());
 			} else {
 				log.info("type blood");
 				samples = tumour.getBloodSamplesForPerson(sourceID, person_id);
-				log.info("samples " + samples.size());
+//				log.info("samples " + samples.size());
 			}
 			
 			List<ConfigDataSources> addSources=(List<ConfigDataSources>)appContext.getBean("configuredDataSources");

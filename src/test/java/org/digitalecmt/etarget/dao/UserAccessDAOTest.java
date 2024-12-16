@@ -60,7 +60,8 @@ public class UserAccessDAOTest {
 		UserAccessDAO userAccess = context.getBean(UserAccessDAO.class);
 		assertFalse(userAccess.isUserDeactivated("anja@bindrich.de"));
 		assertTrue(userAccess.isUserDeactivated("rob.dunne@apps.idecide.science"));
-		assertFalse(userAccess.isUserDeactivated("nobody@somewhere.co.uk"));	
+		assertFalse(userAccess.isUserDeactivated("nobody@somewhere.co.uk"));
+		assertFalse(userAccess.isUserDeactivated("some'body@test.com"));
 	}
 	
 	@Test 
@@ -83,6 +84,7 @@ public class UserAccessDAOTest {
 		assertTrue(userAccess.isUserAllowedEndpoint("richard.hoskins@apps.idecide.science", "GetAllPatients"));
 		assertFalse(userAccess.isUserAllowedEndpoint("richard.hoskins@apps.idecide.science", "PostMutationSelection"));
 		assertFalse(userAccess.isUserAllowedEndpoint("nobody@somewhere.co.uk", "GetAllPatients"));
+		assertTrue(userAccess.isUserAllowedEndpoint("some'body@test.com", "GetAllPatients"));
 		
 	}
 	
@@ -96,6 +98,7 @@ public class UserAccessDAOTest {
 		assertTrue(userAccess.isUserAllowedComponent("richard.hoskins@apps.idecide.science", "patienttable"));
 		assertFalse(userAccess.isUserAllowedComponent("richard.hoskins@apps.idecide.science", "admin"));
 		assertFalse(userAccess.isUserAllowedComponent("nobody@somewhere.co.uk", "patienttable"));
+		assertTrue(userAccess.isUserAllowedComponent("some'body@test.com", "patienttable"));
 	}
 	
 	@Test
@@ -104,6 +107,7 @@ public class UserAccessDAOTest {
 		assertTrue(userAccess.hasUserAccount("anja@bindrich.de"));
 		assertFalse(userAccess.hasUserAccount("someane@else.com"));
 		assertTrue(userAccess.hasUserAccount("rob.dunne@apps.idecide.science"));
+		assertTrue(userAccess.hasUserAccount("some'body@test.com"));
 	}
 
 }

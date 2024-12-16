@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.digitalecmt.etarget.config.TargetConfiguration;
-import org.digitalecmt.etarget.dbentities.GeneName;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;

@@ -58,8 +58,9 @@ public class GeneNameDAOImpl extends JdbcDaoSupport implements GeneNameDAO {
 		List<GeneName> values=null;
 		try {
 			JdbcTemplate template = getJdbcTemplate();
-			values= template.query(query, new Object[] {personID}, 
-					new BeanPropertyRowMapper<GeneName>(GeneName.class));
+			values= template.query(query, 
+					new BeanPropertyRowMapper<GeneName>(GeneName.class),
+					personID);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -35,10 +35,10 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.digitalecmt.etarget.API;
 import org.digitalecmt.etarget.config.TargetConfiguration;
 import org.digitalecmt.etarget.dao.SearchDAO;
@@ -51,7 +51,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.google.gson.Gson;
 
 @Path("/search")
-public class Search extends Application {
+public class Search {
 	private static final Logger log = Logger.getLogger(Search.class.getName());
 	private ApplicationContext appContext;
 	
@@ -63,6 +63,7 @@ public class Search extends Application {
 	@Path("/genes")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getGenes(@HeaderParam("x-ms-client-principal-name") String loggedInUserID) {
+		loggedInUserID = StringEscapeUtils.unescapeHtml4(loggedInUserID);
 		if (!new API().isUserPermittedEndpoint(loggedInUserID, "GetAllPatients")) {
 			// Stop the request if user doesn't have permission for this API or web
 			// component
@@ -77,6 +78,7 @@ public class Search extends Application {
 	@Path("/conditions")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getConditions(@HeaderParam("x-ms-client-principal-name") String loggedInUserID) {
+		loggedInUserID = StringEscapeUtils.unescapeHtml4(loggedInUserID);
 		if (!new API().isUserPermittedEndpoint(loggedInUserID, "GetAllPatients")) {
 			// Stop the request if user doesn't have permission for this API or web
 			// component
@@ -98,6 +100,7 @@ public class Search extends Application {
 	@Path("/patients")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getPatients(@HeaderParam("x-ms-client-principal-name") String loggedInUserID) {
+		loggedInUserID = StringEscapeUtils.unescapeHtml4(loggedInUserID);
 		if (!new API().isUserPermittedEndpoint(loggedInUserID, "GetAllPatients")) {
 			// Stop the request if user doesn't have permission for this API or web
 			// component
@@ -123,6 +126,7 @@ public class Search extends Application {
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getCondition(@HeaderParam("x-ms-client-principal-name") String loggedInUserID, 
 			@PathParam("condition") String condition) {
+		loggedInUserID = StringEscapeUtils.unescapeHtml4(loggedInUserID);
 		if (!new API().isUserPermittedEndpoint(loggedInUserID, "GetAllPatients")) {
 			// Stop the request if user doesn't have permission for this API or web
 			// component
@@ -147,6 +151,7 @@ public class Search extends Application {
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getGene(@HeaderParam("x-ms-client-principal-name") String loggedInUserID, 
 			@PathParam("gene") String gene) {
+		loggedInUserID = StringEscapeUtils.unescapeHtml4(loggedInUserID);
 		if (!new API().isUserPermittedEndpoint(loggedInUserID, "GetAllPatients")) {
 			// Stop the request if user doesn't have permission for this API or web
 			// component
@@ -171,6 +176,7 @@ public class Search extends Application {
 	@Path("/pdxcdxPatients")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getPDXCDX(@HeaderParam("x-ms-client-principal-name") String loggedInUserID) {
+		loggedInUserID = StringEscapeUtils.unescapeHtml4(loggedInUserID);
 		if (!new API().isUserPermittedEndpoint(loggedInUserID, "GetAllPatients")) {
 			// Stop the request if user doesn't have permission for this API or web
 			// component

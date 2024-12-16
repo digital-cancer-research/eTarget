@@ -420,6 +420,7 @@ app.controller("targetController", function($scope, $sce, $http, $timeout, $wind
   $scope.currentUser = 'user';
   $scope.trustAsHtml = $sce.trustAsHtml;
   $scope.pdxcdx = {};
+  $scope.discuss = false;
   $scope.system = {
     status: {}
   };
@@ -1243,7 +1244,7 @@ app.controller("targetController", function($scope, $sce, $http, $timeout, $wind
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     }).then(function successCallback(response) {
       //console.log('Meeting outcome updated.');
-
+	  $scope.discussChecked($scope.currentPatient.person_id, false);
       // Show success message
       $scope.meeting.message = 'Meeting outcome updated.';
 
@@ -1282,7 +1283,7 @@ app.controller("targetController", function($scope, $sce, $http, $timeout, $wind
 	          v[k+'CNA'] = v['copyNumberAlteration'];
 	          delete v['copyNumberAlteration'];
 	      }
-		  console.log(v)
+		  //console.log(v)
       });
       
       $scope.meeting.outcome.unshift({
@@ -2210,11 +2211,19 @@ app.controller("targetController", function($scope, $sce, $http, $timeout, $wind
   
   $scope.definePatientOrder = function(column){
 	  if(column==$scope.patientView.orderByField){
+		if(column == 'discuss'){
+			$scope.patientView.order=($scope.patientView.order-1);
+		}else{
 		  $scope.patientView.order=($scope.patientView.order+1)%3;
-		  if($scope.patientView.order==0) $scope.patientView.orderByField='none';
+		}
+		if($scope.patientView.order==0) $scope.patientView.orderByField='none';
 	  } else {
+		if(column == 'discuss') {
+			$scope.patientView.order=2;
+		} else {
 		  $scope.patientView.order=1;
-		  $scope.patientView.orderByField=column;
+		}
+		$scope.patientView.orderByField=column;
 	  }
   }
   
@@ -3085,7 +3094,7 @@ app.controller("targetController", function($scope, $sce, $http, $timeout, $wind
 		return encodeURI(args);
 	}
 	
-	$scope.setConfig = function(ihc,tumourngs,fmblood,fmtumour,ctdnangs,ctdnaexploratory,pdxcdx) {
+	$scope.setConfig = function(ihc,tumourngs,fmblood,fmtumour,ctdnangs,ctdnaexploratory,pdxcdx,discuss) {
 		$scope.ihc=ihc;
 		$scope.tumourngs=tumourngs;
 		$scope.fmblood=fmblood;
@@ -3093,6 +3102,32 @@ app.controller("targetController", function($scope, $sce, $http, $timeout, $wind
 		$scope.ctdnangs=ctdnangs;
 		$scope.ctdnaexploratory=ctdnaexploratory;
 		$scope.pdxcdx=pdxcdx;
+		$scope.discuss=discuss;
+	}
+	
+	$scope.discussChecked = function(personID, checked) {
+		
+		$http({
+			        method: 'POST',
+			        url: 'rest/discussMTB/'+personID,
+					data: String(checked).toUpperCase(),
+			      }).then(function successCallback(response) {
+					console.log(response)
+					var patient = $scope.allPatients.find(patient => {
+					  return patient.personID === personID;
+					})
+					patient.discuss=String(checked);
+
+			      }, function errorCallback(response) {
+			    	  console.log(response)
+			    	  alert('Error: Unable to nominate patient.');
+			      });
+	}
+	
+	$scope.resetDiscussFilter = function() {
+		if($scope.discussFilter==false) {
+			$scope.discussFilter=undefined;
+		}
 	}
 	
 });

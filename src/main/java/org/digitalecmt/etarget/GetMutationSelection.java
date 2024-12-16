@@ -31,7 +31,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.digitalecmt.etarget.config.ConfigDataSources;
-import org.digitalecmt.etarget.config.TargetConfiguration;
 import org.digitalecmt.etarget.dao.FoundationMedicineDAO;
 import org.digitalecmt.etarget.dao.GeneSubsetDAO;
 import org.digitalecmt.etarget.dao.MutationSelectionDAO;

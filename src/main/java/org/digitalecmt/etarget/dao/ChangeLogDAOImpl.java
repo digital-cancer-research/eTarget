@@ -62,8 +62,9 @@ public class ChangeLogDAOImpl extends JdbcDaoSupport implements ChangeLogDAO {
 		List<ChangeLog> values=null;
 		try {
 			JdbcTemplate template = getJdbcTemplate();
-			values=template.query(queryUser, new Object[] {user_id},
-					new BeanPropertyRowMapper<ChangeLog>(ChangeLog.class));
+			values=template.query(queryUser,
+					new BeanPropertyRowMapper<ChangeLog>(ChangeLog.class),
+					user_id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

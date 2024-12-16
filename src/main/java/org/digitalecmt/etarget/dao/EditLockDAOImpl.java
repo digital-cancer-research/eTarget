@@ -61,7 +61,7 @@ public class EditLockDAOImpl extends JdbcDaoSupport implements EditLockDAO {
 		log.info("lock " + user_id + " " + person_id);
 		JdbcTemplate template = getJdbcTemplate();
 		try {
-			Integer role = template.queryForObject(getRole, new Object[] {user_id}, Integer.class);
+			Integer role = template.queryForObject(getRole, Integer.class, user_id);
 			if(role!=2 && role!=6)  return Boolean.FALSE;
 		} catch (EmptyResultDataAccessException e) {
 			return Boolean.FALSE;
@@ -75,7 +75,7 @@ public class EditLockDAOImpl extends JdbcDaoSupport implements EditLockDAO {
 	public Boolean isLocked(String user_id, int person_id) throws DataAccessException {
 		JdbcTemplate template = getJdbcTemplate();
 		try {
-			template.queryForObject(isLocked, new Object[] {person_id, user_id, lockMin}, new BeanPropertyRowMapper<EditLock>(EditLock.class));
+			template.queryForObject(isLocked, new BeanPropertyRowMapper<EditLock>(EditLock.class), person_id, user_id, lockMin);
 			return Boolean.TRUE;
 		} catch(EmptyResultDataAccessException e) {
 			return Boolean.FALSE;
@@ -91,7 +91,7 @@ public class EditLockDAOImpl extends JdbcDaoSupport implements EditLockDAO {
 	@Override
 	public String getLocker(int person_id) throws DataAccessException {
 		JdbcTemplate template = getJdbcTemplate();
-		EditLock el = template.queryForObject(getLocker, new Object[] {person_id, lockMin}, new BeanPropertyRowMapper<EditLock>(EditLock.class));
+		EditLock el = template.queryForObject(getLocker, new BeanPropertyRowMapper<EditLock>(EditLock.class), person_id, lockMin);
 		return el.getUser_id();
 	}
 
@@ -106,7 +106,7 @@ public class EditLockDAOImpl extends JdbcDaoSupport implements EditLockDAO {
 	public Boolean isEditor(String user_id) throws DataAccessException {
 		JdbcTemplate template = getJdbcTemplate();
 		try {
-			Integer role = template.queryForObject(getRole, new Object[] {user_id}, Integer.class);
+			Integer role = template.queryForObject(getRole, Integer.class, user_id);
 			if(role!=2 && role!=6) return Boolean.FALSE;
 			else return Boolean.TRUE;
 		} catch (EmptyResultDataAccessException e) {

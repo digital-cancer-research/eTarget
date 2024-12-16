@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.digitalecmt.etarget.config.ConfigDataSources;
 import org.digitalecmt.etarget.support.Formater;
 
 import com.google.gson.Gson;

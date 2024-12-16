@@ -51,6 +51,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.digitalecmt.etarget.API;
 
 import com.microsoft.azure.storage.CloudStorageAccount;
@@ -93,6 +94,7 @@ public class FileAccess {
 	@Produces("text/html")
 	public Response getHTML(@HeaderParam("x-ms-client-principal-name") String loggedInUserID,
 			@PathParam("filename") String filename) {
+		loggedInUserID = StringEscapeUtils.unescapeHtml4(loggedInUserID);
 		log.info("access file: (html) " + filename + " by " + loggedInUserID);
 		if (!new API().isUserPermittedEndpoint(loggedInUserID, "TumourNGS")) {
 			// Stop the request if user doesn't have permission for this API or web
@@ -154,6 +156,7 @@ public class FileAccess {
 	@Produces("image/jpeg")
 	public Response getImage(@HeaderParam("x-ms-client-principal-name") String loggedInUserID,
 			@PathParam("filename") String filename) {
+		loggedInUserID = StringEscapeUtils.unescapeHtml4(loggedInUserID);
 		log.info("access file image: " + filename + " by " + loggedInUserID);
 		if (!new API().isUserPermittedEndpoint(loggedInUserID, "IHCReport")) {
 			// Stop the request if user doesn't have permission for this API or web
@@ -208,6 +211,7 @@ public class FileAccess {
 	@Produces("application/pdf")
 	public Response getPDF(@HeaderParam("x-ms-client-principal-name") String loggedInUserID,
 			@PathParam("filename") String filename) {
+		loggedInUserID = StringEscapeUtils.unescapeHtml4(loggedInUserID);
 		log.info("access file pdf: " + filename + " by " + loggedInUserID);
 		if (!new API().isUserPermittedEndpoint(loggedInUserID, "TumourNGS")) {
 			// Stop the request if user doesn't have permission for this API or web

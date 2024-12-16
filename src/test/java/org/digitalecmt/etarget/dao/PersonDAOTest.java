@@ -62,4 +62,12 @@ public class PersonDAOTest {
 		assertTrue(person.deltePersonByPersonId(100));
 	}
 	
+	@Test 
+	public void testUpdateDiscussionStatus() {
+		PersonDAO person = context.getBean(PersonDAO.class);
+		assertTrue(person.updateDisussionStatus(10, true)==1);
+		assertTrue(person.updateDisussionStatus(10, true)==1);
+		assertTrue(person.updateDisussionStatus(10, false)==1);
+	}
+	
 }

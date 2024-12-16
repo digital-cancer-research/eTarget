@@ -49,5 +49,14 @@ public class GetAllPatientsTest {
 		assertTrue(results.length()>0);
 		assertTrue(results.contains("requirePrinting"));
 	}
+	
+	@Test
+	public void testDiscuss() {
+		GetAllPatients ap = new GetAllPatients("anja@bindrich.de");
+		String results=ap.processRequest();
+		System.out.println(results);
+		assertTrue(results.length()>0);
+		assertTrue(results.contains("discuss"));	
+	}
 
 }

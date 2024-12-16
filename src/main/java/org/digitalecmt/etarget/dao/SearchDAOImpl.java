@@ -60,7 +60,7 @@ public class SearchDAOImpl  extends JdbcDaoSupport implements SearchDAO {
 		List<Search> values = null;
 		try {
 			JdbcTemplate template = getJdbcTemplate();
-			values= template.query(query, new Object[] {}, 
+			values= template.query(query,
 					new BeanPropertyRowMapper<Search>(Search.class));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -138,7 +138,7 @@ public class SearchDAOImpl  extends JdbcDaoSupport implements SearchDAO {
 		List<GeneSearch> values = null;
 		try {
 			JdbcTemplate template = getJdbcTemplate();
-			values= template.query(gene, new Object[] {}, 
+			values= template.query(gene, 
 					new BeanPropertyRowMapper<GeneSearch>(GeneSearch.class));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -151,8 +151,8 @@ public class SearchDAOImpl  extends JdbcDaoSupport implements SearchDAO {
 		List<Search> values = null;
 		try {
 			JdbcTemplate template = getJdbcTemplate();
-			values= template.query(queryCondition, new Object[] {cond, cond}, 
-					new BeanPropertyRowMapper<Search>(Search.class));
+			values= template.query(queryCondition,
+					new BeanPropertyRowMapper<Search>(Search.class), cond, cond);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -164,8 +164,8 @@ public class SearchDAOImpl  extends JdbcDaoSupport implements SearchDAO {
 		List<Search> values = null;
 		try {
 			JdbcTemplate template = getJdbcTemplate();
-			values= template.query(queryGene, new Object[] {gene, gene, gene}, 
-					new BeanPropertyRowMapper<Search>(Search.class));
+			values= template.query(queryGene, 
+					new BeanPropertyRowMapper<Search>(Search.class), gene, gene, gene);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

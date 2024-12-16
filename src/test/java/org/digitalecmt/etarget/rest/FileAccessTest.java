@@ -34,14 +34,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.core.Application;
-
 import org.junit.Test;
 
 public class FileAccessTest extends JerseyTest{
 	
 	@Override
-    protected Application configure() {
+    protected javax.ws.rs.core.Application configure() {
         return new ResourceConfig(FileAccess.class);
     }
 

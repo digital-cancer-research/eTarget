@@ -35,10 +35,10 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.digitalecmt.etarget.API;
 import org.digitalecmt.etarget.config.TargetConfiguration;
 import org.digitalecmt.etarget.dao.FoundationMedicineDAO;
@@ -53,7 +53,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.google.gson.Gson;
 
 @Path("/FMBlood")
-public class FMBlood extends Application {
+public class FMBlood {
 	private static final Logger log = Logger.getLogger(FMBlood.class.getName());
 	private ApplicationContext appContext;
 	
@@ -65,6 +65,7 @@ public class FMBlood extends Application {
 	@Produces({MediaType.APPLICATION_JSON})
 	@GET
 	public Response getFMBlood(@HeaderParam("x-ms-client-principal-name") String loggedInUserID , @PathParam("person_id") String personID) {
+		loggedInUserID = StringEscapeUtils.unescapeHtml4(loggedInUserID);
 		if (!new API().isUserPermittedEndpoint(loggedInUserID, "CTDNAExploratory")) {
 			// Stop the request if user doesn't have permission for this API or web
 			// component

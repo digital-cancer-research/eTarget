@@ -50,8 +50,9 @@ public class MeetingOutcomeGeneVariantDAOImpl extends JdbcDaoSupport implements 
 	public List<MeetingOutcomeGeneVariant> getGeneVariantsForMeetingOutcome(int mo_id) throws DataAccessException {
 		List<MeetingOutcomeGeneVariant> values=null;
 		JdbcTemplate template = getJdbcTemplate();
-		values= template.query(select, new Object[] {mo_id},
-				new BeanPropertyRowMapper<MeetingOutcomeGeneVariant>(MeetingOutcomeGeneVariant.class));
+		values= template.query(select,
+				new BeanPropertyRowMapper<MeetingOutcomeGeneVariant>(MeetingOutcomeGeneVariant.class),
+				mo_id);
 		return values;
 	}
 

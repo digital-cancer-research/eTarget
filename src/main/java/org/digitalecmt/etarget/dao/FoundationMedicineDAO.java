@@ -35,10 +35,13 @@ import org.digitalecmt.etarget.dbentities.ShortVariant;
 
 public interface FoundationMedicineDAO {
 	List<ShortVariant> getShortVariants(Integer measurement_gene_panel_id);
+	List<ShortVariant> getSignificantShortVariants(Integer measurement_gene_panel_id);
 	List<ShortVariant> getShortVariantsForPerson(Integer person_id);
 	List<CopyNumberAlteration> getCopyNumberAlterations(Integer measurement_gene_panel_id);
+	List<CopyNumberAlteration> getSignificantCopyNumberAlterations(Integer measurement_gene_panel_id);
 	List<CopyNumberAlteration> getCopyNumberAlterationsForPerson(Integer person_id);
 	List <Rearrangement> getRearrangements(Integer measurement_gene_panel_id);
+	List <Rearrangement> getSignificantRearrangements(Integer measurement_gene_panel_id);
 	List <Rearrangement> getRearrangementsForPerson(Integer person_id);
 	List <FMSample> getBloodSamplesForPerson(Integer person_id);
 	List <FMSample> getTumourSamplesForPerson(Integer person_id);

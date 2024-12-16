@@ -32,4 +32,5 @@ public interface PersonDAO {
 	String getTarId(int person_id);
 	Boolean deltePersonByPersonId(int person_id);
 	List<String> getReports(int person_id);
+	Integer updateDisussionStatus(int person_id, boolean discuss);
 }

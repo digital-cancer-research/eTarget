@@ -38,7 +38,7 @@ public class ComponentTest extends JerseyTest {
 
 	@Override
     protected Application configure() {
-        return new ResourceConfig(Component.class);
+        return new ResourceConfig(org.digitalecmt.etarget.rest.Component.class);
     }
 	
 	@Test

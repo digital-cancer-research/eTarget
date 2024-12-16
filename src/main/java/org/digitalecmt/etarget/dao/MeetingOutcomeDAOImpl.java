@@ -86,13 +86,14 @@ public class MeetingOutcomeDAOImpl  extends JdbcDaoSupport implements MeetingOut
 	public List<MeetingOutcome> getMeetingOutcomesByPersonID(int personID) throws DataAccessException {
 		List<MeetingOutcome> values = null;
 		JdbcTemplate template = getJdbcTemplate();
-		values= template.query(select, new Object[] {personID}, 
-				new BeanPropertyRowMapper<MeetingOutcome>(MeetingOutcome.class));
+		values= template.query(select, 
+				new BeanPropertyRowMapper<MeetingOutcome>(MeetingOutcome.class),
+				personID);
 		MeetingOutcomeGeneVariantDAO genes= new MeetingOutcomeGeneVariantDAOImpl(this.getDataSource());
 		GeneSubsetDAO ctDNA= new GeneSubsetDAOImpl(this.getDataSource());
 		TumourNgsDAO tumourNGS = new TumourNgsDAOImpl(this.getDataSource());
 		FoundationMedicineDAO fmDao = new FoundationMedicineDAOImpl(this.getDataSource());
-		GenomicsDataDAO genomicsData = GenomicsDataDAOImpl.getInstance(this.getDataSource());
+//		GenomicsDataDAO genomicsData = GenomicsDataDAOImpl.getInstance(this.getDataSource());
 		for(MeetingOutcome outcome : values) {
 			List<MeetingOutcomeGeneVariant> genevariants=genes.getGeneVariantsForMeetingOutcome(outcome.getMo_id());
 			for(MeetingOutcomeGeneVariant gene : genevariants) {
@@ -247,8 +248,9 @@ public class MeetingOutcomeDAOImpl  extends JdbcDaoSupport implements MeetingOut
 	public MeetingOutcome getMeetingOutcomeByMeetingID(int meetingOutcomeID) throws DataAccessException{
 		MeetingOutcome values = null;
 		JdbcTemplate template = getJdbcTemplate();
-		values= (MeetingOutcome) template.queryForObject(selectMeeting, new Object[] {meetingOutcomeID}, 
-				new BeanPropertyRowMapper<MeetingOutcome>(MeetingOutcome.class));
+		values= (MeetingOutcome) template.queryForObject(selectMeeting,
+				new BeanPropertyRowMapper<MeetingOutcome>(MeetingOutcome.class),
+				meetingOutcomeID);
 		MeetingOutcomeGeneVariantDAO genes= new MeetingOutcomeGeneVariantDAOImpl(this.getDataSource());
 		GeneSubsetDAO ctDNA= new GeneSubsetDAOImpl(this.getDataSource());
 		TumourNgsDAO tumourNGS = new TumourNgsDAOImpl(this.getDataSource());
@@ -317,7 +319,7 @@ public class MeetingOutcomeDAOImpl  extends JdbcDaoSupport implements MeetingOut
 	public List<Integer> getMeetingOutcomesForPrinting(int personID) throws DataAccessException {
 		List<Integer> values = null;
 		JdbcTemplate template = getJdbcTemplate();
-		values= template.queryForList(selectForPrintingPerson, new Object[] {personID}, Integer.class);
+		values= template.queryForList(selectForPrintingPerson, Integer.class, personID);
 		return values;
 	}
 	@Override
@@ -325,7 +327,7 @@ public class MeetingOutcomeDAOImpl  extends JdbcDaoSupport implements MeetingOut
 		java.sql.Timestamp meetingdate=null;
 		JdbcTemplate template = getJdbcTemplate();
 		try {
-			meetingdate= template.queryForObject(selectLastMeetingOutcome, new Object[] {personID}, java.sql.Timestamp.class);
+			meetingdate= template.queryForObject(selectLastMeetingOutcome, java.sql.Timestamp.class, personID);
 		} catch (IncorrectResultSizeDataAccessException err) {
 			return null;
 		}
@@ -341,10 +343,10 @@ public class MeetingOutcomeDAOImpl  extends JdbcDaoSupport implements MeetingOut
 		java.sql.Date specimendate = null;
 		JdbcTemplate template = getJdbcTemplate();
 		try {
-			specimendate = template.queryForObject(selectBloodDateWithIngestion, new Object[] {personID, meeting_date}, java.sql.Date.class);
+			specimendate = template.queryForObject(selectBloodDateWithIngestion, java.sql.Date.class, personID, meeting_date);
 		} catch (IncorrectResultSizeDataAccessException err) {
 			try {
-				specimendate = template.queryForObject(selectBloodDate, new Object[] {personID, meeting_date}, java.sql.Date.class);
+				specimendate = template.queryForObject(selectBloodDate, java.sql.Date.class, personID, meeting_date);
 			}catch (IncorrectResultSizeDataAccessException err2) {
 				return null;
 			}
@@ -361,10 +363,10 @@ public class MeetingOutcomeDAOImpl  extends JdbcDaoSupport implements MeetingOut
 		java.sql.Date specimendate = null;
 		JdbcTemplate template = getJdbcTemplate();
 		try {
-			specimendate = template.queryForObject(selectTumourDateWithIngestion, new Object[] {personID, meeting_date}, java.sql.Date.class);
+			specimendate = template.queryForObject(selectTumourDateWithIngestion, java.sql.Date.class, personID, meeting_date);
 		} catch (IncorrectResultSizeDataAccessException err) {
 			try {
-				specimendate = template.queryForObject(selectTumourDate, new Object[] {personID, meeting_date}, java.sql.Date.class);
+				specimendate = template.queryForObject(selectTumourDate, java.sql.Date.class, personID, meeting_date);
 			}catch (IncorrectResultSizeDataAccessException err2) {
 				return null;
 			}

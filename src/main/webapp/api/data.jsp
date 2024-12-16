@@ -50,6 +50,7 @@
 <%@ page import="org.digitalecmt.etarget.IsLocked" %>
 <%@ page import="org.digitalecmt.etarget.GetAllGenes" %>
 <%@ page import="org.digitalecmt.etarget.PostGenePanel" %>
+<%@ page import="org.apache.commons.text.StringEscapeUtils" %>
 
 <%-- Set the content type header with the JSP directive --%>
 <%@ page contentType="application/json" %>
@@ -64,7 +65,7 @@ String data = request.getParameter("data");
 String personID = request.getParameter("personID");
 // General vars
 String requestedData = "";
-
+loggedInUserID=StringEscapeUtils.unescapeHtml4(loggedInUserID);
 switch(endpoint) {
   case "currentuser":
     // Send the login for the current user

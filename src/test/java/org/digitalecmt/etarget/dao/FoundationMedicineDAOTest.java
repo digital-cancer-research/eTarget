@@ -70,6 +70,15 @@ public class FoundationMedicineDAOTest {
 	}
 	
 	@Test
+	public void testSignificantShortVariants() {
+		FoundationMedicineDAO fmDao = context.getBean(FoundationMedicineDAO.class);
+		List<ShortVariant> svl = fmDao.getSignificantShortVariants(2785);
+		assertTrue(svl.size()==6);
+		assertTrue(svl.get(0).getGene_name()!=null);
+	}
+	
+	
+	@Test
 	public void testCopyNumberAlterationsPerson() {
 		FoundationMedicineDAO fmDao = context.getBean(FoundationMedicineDAO.class);
 		List<CopyNumberAlteration> cnal = fmDao.getCopyNumberAlterationsForPerson(19);
@@ -82,6 +91,14 @@ public class FoundationMedicineDAOTest {
 		FoundationMedicineDAO fmDao = context.getBean(FoundationMedicineDAO.class);
 		List<CopyNumberAlteration> cnal = fmDao.getCopyNumberAlterations(2785);
 		assertTrue(cnal.size()==4);
+		assertTrue(cnal.get(0).getGene_name()!=null);
+	}
+	
+	@Test
+	public void testSignificantCopyNumberAlterations() {
+		FoundationMedicineDAO fmDao = context.getBean(FoundationMedicineDAO.class);
+		List<CopyNumberAlteration> cnal = fmDao.getSignificantCopyNumberAlterations(2785);
+		assertTrue(cnal.size()==3);
 		assertTrue(cnal.get(0).getGene_name()!=null);
 	}
 	
@@ -103,6 +120,25 @@ public class FoundationMedicineDAOTest {
 		assertTrue(rl.get(0).getRearr_gene_1_name().equals("EP300"));
 		assertTrue(rl.get(0).getRearr_gene_2_name().equals("EP300"));
 		assertTrue(rl.get(0).getRearr_number_of_reads()==80);
+	}
+	
+	@Test
+	public void testSignificantRearrangements() {
+		FoundationMedicineDAO fmDao = context.getBean(FoundationMedicineDAO.class);
+		List<Rearrangement> rl = fmDao.getSignificantRearrangements(2785);
+		assertTrue(rl.size()==1);
+		assertTrue(rl.get(0).getRearr_gene_1_name().equals("EP300"));
+		assertTrue(rl.get(0).getRearr_gene_2_name().equals("EP300"));
+		assertTrue(rl.get(0).getRearr_number_of_reads()==80);
+	}
+	
+	@Test
+	public void testSignificantRearrangements2() {
+		FoundationMedicineDAO fmDao = context.getBean(FoundationMedicineDAO.class);
+		List<Rearrangement> rl = fmDao.getSignificantRearrangements(2793);
+		assertTrue(rl.size()==1);
+		List<Rearrangement> rl2 = fmDao.getRearrangements(2793);
+		assertTrue(rl2.size()==3);
 	}
 	
 	@Test
@@ -129,6 +165,10 @@ public class FoundationMedicineDAOTest {
 		assertTrue(sl.size()==2);
 		System.out.println(sl.get(0).getTmb_score());
 		assertTrue(sl.get(0).getTmb_score()==1.75);
+		System.out.println(sl.get(0).getLoss_of_heterozygosity_score());
+		assertTrue(sl.get(0).getLoss_of_heterozygosity_score()>7.5);
+		System.out.println(sl.get(0).getLoss_of_heterozygosity_unit());
+		assertTrue(sl.get(0).getLoss_of_heterozygosity_unit().compareTo("%")==0);
 	}
 	
 	@Test

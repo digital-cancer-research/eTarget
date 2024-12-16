@@ -30,7 +30,6 @@ import static org.junit.Assert.*;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 
 import org.digitalecmt.etarget.config.TargetConfiguration;
 import org.digitalecmt.etarget.dbentities.MeetingOutcome;

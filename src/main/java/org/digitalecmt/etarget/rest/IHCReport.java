@@ -29,7 +29,6 @@ package org.digitalecmt.etarget.rest;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import javax.ws.rs.core.Application;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -38,6 +37,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.digitalecmt.etarget.API;
 import org.digitalecmt.etarget.config.TargetConfiguration;
 import org.digitalecmt.etarget.dao.IHCReportDAO;
@@ -51,7 +51,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.google.gson.Gson;
 
 @Path("/IHCReport")
-public class IHCReport extends Application {
+public class IHCReport {
 	private static final Logger log = Logger.getLogger(IHCReport.class.getName());
 	private ApplicationContext appContext;
 	
@@ -64,6 +64,7 @@ public class IHCReport extends Application {
 	@GET
 	public Response getIHCReport(@HeaderParam("x-ms-client-principal-name") String loggedInUserID , @PathParam("person_id") String personID) {
 		Integer personIDint = Integer.parseInt(personID);
+		loggedInUserID = StringEscapeUtils.unescapeHtml4(loggedInUserID);
 		if (!new API().isUserPermittedEndpoint(loggedInUserID, "IHCReport")) {
 			// Stop the request if user doesn't have permission for this API or web
 			// component

@@ -45,6 +45,7 @@
 	String tabNames[] = new String[names.length];
 	String tabBlood[] = new String[names.length];
 	String tabTumour[] = new String[names.length];
+	String tabCode[] = new String[names.length];
 	String tabId[] = new String[names.length];
 	String ihc = resource.getString("page.ihc");
 	String fmblood = resource.getString("page.fmblood");
@@ -53,11 +54,14 @@
 	String ctdnangs = resource.getString("page.ctdnangs");
 	String ctdnaexploratory = resource.getString("page.ctdnaexploratory");
 	String pdxcdx=resource.getString("page.pdxcdx");
+	String discuss=resource.getString("page.patientsList.discuss");
+	String[] meetingoutcomes=resource.getString("application.meetingoutcome").split(",");
 	for(int i=0;i<names.length;i++){
 		tabId[i]=names[i].trim();
 		tabNames[i]=resource.getString("page.name.".concat(names[i].trim()));
 		tabBlood[i]=resource.getString("page.name.".concat(names[i].trim()).concat(".blood"));
 		tabTumour[i]=resource.getString("page.name.".concat(names[i].trim()).concat(".tumour"));
+		tabCode[i]=resource.getString("page.name.".concat(names[i].trim()).concat(".code"));
 	}
 	
 	request.setAttribute("tabName", tabNames);
@@ -76,6 +80,10 @@
 	request.setAttribute("pdxcdx", resource.getString("page.pdxcdx"));
 	request.setAttribute("blood", resource.getString("data.blood"));
 	request.setAttribute("tumour", resource.getString("data.tumour"));
+	request.setAttribute("discuss", resource.getString("page.patientsList.discuss"));
+	request.setAttribute("meetingoutcomes", resource.getString("application.meetingoutcome").split(","));
+	request.setAttribute("tabCode", tabCode);
+	
 %>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
@@ -96,7 +104,6 @@
 <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="96x96" href="./favicon-96x96.png">
 <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
-<link rel="manifest" href="./manifest.json">
 <meta name="msapplication-TileColor" content="#ffffff">
 <meta name="msapplication-TileImage" content="./ms-icon-144x144.png">
 <meta name="theme-color" content="#ffffff">
@@ -120,8 +127,7 @@
 <link rel="stylesheet" type="text/css"
 	href="css/ui-bootstrap-custom-2.5.0-csp.css" />
 <!-- JS -->
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="js/jquery-3.7.1.min.js"></script>
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.4.1/es5-shim.js"></script>
 <!-- Shim for IE -->
@@ -174,7 +180,7 @@
 	<div class="page" ng-show="page.list" id="patient-list">
 		<h1>All Patients</h1>
 		<div ng-include="'rest/component/patienttable'"
-			onload="setConfig('<%=ihc%>','<%=tumourngs%>','<%=fmblood%>','<%=fmtumour%>','<%=ctdnangs%>','<%=ctdnaexploratory%>','<%=pdxcdx%>'); getAllPatients()"></div>
+			onload="setConfig('<%=ihc%>','<%=tumourngs%>','<%=fmblood%>','<%=fmtumour%>','<%=ctdnangs%>','<%=ctdnaexploratory%>','<%=pdxcdx%>', '<%=discuss%>'); getAllPatients()"></div>
 	</div>
 
 	<!-- Search page -->
@@ -552,6 +558,10 @@
 					     ng-show="detailSection.${tabId[loop.index]}_bloodSubs[keyBase]"
 					     ng-init="baselineCurr = $index">
 						<p>Date of Sample: {{valueBase.specimen.specimenDate}}</p>
+						<!--  <p>%{tabCode} %{tabCode[loop.index]}</p>-->
+						<div ng-show="keyBase=='1' && currentPatient.${tabId[loop.index]}_blood.baseline.hasOwnProperty('1') && valueBase['1'].hasOwnProperty('panel_id')" class="PatientLetter">
+						  <button><a target="_blank" ng-href="rest/patientletter/{{currentPatient.person_id}}/${tabCode[loop.index]}/blood/{{keyBase}}/{{(valueBase | objLength)-1}}">Patient Letter</a></button>
+						</div>
 						<p ng-show="!valueBase['1'].hasOwnProperty('panel_id')">Results not available.</p>
 						<uib-tabset active="active_${tabId[loop.index]}_blood[1][keyBase]" ng-show="valueBase['1'].hasOwnProperty('panel_id')">
 						<!-- <div ng-repeat="(version, value) in valueBase" 
@@ -566,7 +576,15 @@
 							<h2 ng-show="valueBase.hasOwnProperty('2')">Run {{key}}</h2> -->
 							<p>TMB: <span>{{value.tmb_status}}<span ng-show="value.tmb_score!=''">; </span>{{value.tmb_score}} {{value.tmb_unit}}</span></p>
 							<p>Microsatellite Status: <span ng-if="value.microsatellite_status!='MSS'">{{value.microsatellite_status}}</span><span ng-if="value.microsatellite_status=='MSS'">Cannot Be Determined</span></p>
-							<p>Tumour Fraction Score: <span>{{value.tumour_fraction_score}} {{value.tumour_fraction_unit}}</span>
+							<p>Tumour Fraction Score: 
+							<span ng-show="value.tumour_fraction_score==0">Elevated Tumour Fraction Not Detected</span>
+							<span ng-show="value.tumour_fraction_score==-1">Cannot Be Determined</span>
+							<span ng-show="value.tumour_fraction_score!=0 && value.tumour_fraction_score!=-1 ">{{value.tumour_fraction_score}} {{value.tumour_fraction_unit}}</span>
+							</p>
+							<p ng-show="value.loss_of_heterozygosity!='Not reported'">Loss of Heterozygosity Score:
+								<span ng-show="value.loss_of_heterozygosity==-1">Cannot Be Determined</span>
+								<span ng-show="value.loss_of_heterozygosity!=-1">{{value.loss_of_heterozygosity}} {{value.loss_of_heterozygosity_unit}}</span>
+							</p>
 							<!-- <p>Percentage with 100x read depth: <span>{{value.percent_exons_100x}}</span></p>-->
 							<div class="fm_headline">
 								<h3>Genomic Alterations Identified</h3>
@@ -591,7 +609,7 @@
 												<div ng-include="loadComponent('genericgenomictick','${tabId[loop.index]}_blood')"></div>
 											</td>
 											<td><em>{{gene.geneName}}</em></td>
-											<td
+											<td class="break_word"
 												ng-bind-html="trustAsHtml(gene.result)"></td>
 											<td>{{gene.variant_allele_frequency}}</td>
 											<td>{{gene.read_depth}}</td>
@@ -725,7 +743,7 @@
 										<tr
 											ng-repeat="gene in value.short_variants | filterterm:'is_significant':'false' | orderBy: 'geneName'">
 											<td><em>{{gene.geneName}}</em></td>
-											<td
+											<td class="break_word"
 												ng-bind-html="trustAsHtml(gene.result)"></td>
 											<td>{{gene.variant_allele_frequency}}</td>
 											<td>{{gene.read_depth}}</td>
@@ -835,6 +853,9 @@
 					     ng-show="detailSection.${tabId[loop.index]}_tumourSubs[keyBase]"
 					     ng-init="baselineCurr = $index">
 						<p>Date of Sample: {{valueBase.specimen.specimenDate}}</p>
+						<div ng-show="keyBase=='1' && currentPatient.${tabId[loop.index]}_tumour.baseline.hasOwnProperty('1') && valueBase['1'].hasOwnProperty('panel_id')" class="PatientLetter">
+						  <button><a target="_blank" ng-href="rest/patientletter/{{currentPatient.person_id}}/${tabCode[loop.index]}/tumour/{{keyBase}}/{{(valueBase | objLength)-1}}">Patient Letter</a></button>
+						</div>
 						<p ng-show="!valueBase['1'].hasOwnProperty('panel_id')">Results not available.</p>
 						<uib-tabset active="active_${tabId[loop.index]}_tumour[1][keyBase]" ng-show="valueBase['1'].hasOwnProperty('panel_id')">
 						<!-- <div ng-repeat="(version, value) in valueBase" 
@@ -852,6 +873,10 @@
 							<p>Microsatellite Status: <span ng-if="value.microsatellite_status!='MSS'">{{value.microsatellite_status}}</span><span ng-if="value.microsatellite_status=='MSS'">MS-Stable</span></p>
 							<p>Mean exon depth: <span>{{value.mean_exon_depth}}</span>
 							<!-- <p>Percentage with 100x read depth: <span>{{value.percent_exons_100x}}</span></p>-->
+							<p ng-show="value.loss_of_heterozygosity!='Not reported'">Loss of Heterozygosity Score:
+								<span ng-show="value.loss_of_heterozygosity==-1">Cannot Be Determined</span>
+								<span ng-show="value.loss_of_heterozygosity!=-1">{{value.loss_of_heterozygosity}} {{value.loss_of_heterozygosity_unit}}</span>
+							</p>
 							<div class="fm_headline">
 								<h3>Genomic Alterations Identified</h3>
 								<h4>Short Variants</h4>
@@ -876,7 +901,7 @@
 												<div ng-include="loadComponent('genericgenomictick', '${tabId[loop.index]}_tumour')"></div>
 											</td>
 											<td><em>{{gene.geneName}}</em></td>
-											<td
+											<td class="break_word"
 												ng-bind-html="trustAsHtml(gene.result)"></td>
 											<td>{{gene.variant_allele_frequency}}</td>
 											<td>{{gene.read_depth}}</td>
@@ -1013,7 +1038,7 @@
 										<tr
 											ng-repeat="gene in value.short_variants | filterterm:'is_significant':'false' | orderBy: 'geneName'">
 											<td><em>{{gene.geneName}}</em></td>
-											<td
+											<td class="break_word"
 												ng-bind-html="trustAsHtml(gene.result)"></td>
 											<td>{{gene.variant_allele_frequency}}</td>
 											<td>{{gene.read_depth}}</td>
@@ -1126,6 +1151,9 @@
 				     ng-show="detailSection.fmTumourSubs[keyBase]"
 				     ng-init="baselineCurr = $index">
 					<p>Date of Sample: {{valueBase.specimen.specimenDate}}</p>
+					<div ng-show="keyBase=='1' && currentPatient.fmTumour.hasOwnProperty('1') && valueBase['1'].hasOwnProperty('panel_id')" class="PatientLetter">
+					  <button><a target="_blank" ng-href="rest/patientletter/{{currentPatient.person_id}}/FM/tumour/{{keyBase}}/{{(valueBase | objLength)-1}}">Patient Letter</a></button>
+					</div>
 					<p ng-show="!valueBase['1'].hasOwnProperty('panel_id')">Results not available.</p>
 					<uib-tabset active="active_FMTumour[1][keyBase]" ng-show="valueBase['1'].hasOwnProperty('panel_id')">
 					<!-- <div ng-repeat="(version, value) in valueBase" 
@@ -1139,9 +1167,17 @@
 					     ng-show="key!='specimen' && run.hasOwnProperty('tmb_status')">
 						<h2 ng-show="valueBase.hasOwnProperty('2')">Run {{key}}</h2> -->
 						<p>TMB: <span>{{value.tmb_status}}<span ng-show="value.tmb_score!=''">; </span>{{value.tmb_score}} {{value.tmb_unit}}</span></p>
-						<p>Microsatellite Status: <span ng-if="value.microsatellite_status!='MSS'">{{value.microsatellite_status}}</span><span ng-if="value.microsatellite_status=='MSS'">MS-Stable</span></p>
+						<p>Microsatellite Status: <span ng-if="value.microsatellite_status!='MSS' && value.microsatellite_status!='MSI-H' && value.microsatellite_status!='MSI-L'">Cannot Be Determined</span>
+						<span ng-if="value.microsatellite_status=='MSS'">MS-Stable</span>
+						<span ng-if="value.microsatellite_status=='MSI-H'">MSI-High</span>
+						<span ng-if="value.microsatellite_status=='MSI-L'">MS-Equivocal</span>
+						</p>
 						<p>Mean exon depth: <span>{{value.mean_exon_depth}}</span>
 						<!--<p>Percentage with 100x read depth: <span>{{value.percent_exons_100x}}</span></p>-->
+						<p ng-show="value.loss_of_heterozygosity!='Not reported'">Loss of Heterozygosity Score:
+							<span ng-show="value.loss_of_heterozygosity==-1">Cannot Be Determined</span>
+							<span ng-show="value.loss_of_heterozygosity!=-1">{{value.loss_of_heterozygosity}} {{value.loss_of_heterozygosity_unit}}</span>
+						</p>
 						<div class="fm_headline">
 							<h3>Genomic Alterations Identified</h3>
 							<h4>Short Variants</h4>
@@ -1166,7 +1202,7 @@
 											<div ng-include="loadComponent('fmtumourtick')"></div>
 										</td>
 										<td><em>{{gene.geneName}}</em></td>
-										<td
+										<td class="break_word"
 											ng-bind-html="trustAsHtml(gene.result)"></td>
 										<td>{{gene.variant_allele_frequency}}</td>
 										<td>{{gene.read_depth}}</td>
@@ -1294,8 +1330,8 @@
 										<th>Variant Allele Frequency (%)</th>
 										<th>Read Depth</th>
 										<th>Functional Effect</th>
-										<th>Transcript</th>
 										<th>Position</th>
+										<th>Transcript</th>
 										<th>Subclonal</th>
 										<th>Status</th>
 									</tr>
@@ -1303,7 +1339,7 @@
 									<tr
 										ng-repeat="gene in value.short_variants | filterterm:'is_significant':'false' | orderBy: 'geneName'">
 										<td><em>{{gene.geneName}}</em></td>
-										<td
+										<td class="break_word"
 											ng-bind-html="trustAsHtml(gene.result)"></td>
 										<td>{{gene.variant_allele_frequency}}</td>
 										<td>{{gene.read_depth}}</td>
@@ -1413,6 +1449,9 @@
 				     ng-show="detailSection.fmBloodSubs[keyBase]"
 				     ng-init="baselineCurr = $index">
 					<p>Date of Sample: {{valueBase.specimen.specimenDate}}</p>
+					<div ng-show="keyBase=='1' && currentPatient.fmBlood.baseline.hasOwnProperty('1') && valueBase['1'].hasOwnProperty('panel_id')" class="PatientLetter">
+					  <button><a target="_blank" ng-href="rest/patientletter/{{currentPatient.person_id}}/FM/blood/{{keyBase}}/{{(valueBase | objLength)-1}}">Patient Letter</a></button>
+					</div>
 					<p ng-show="!valueBase['1'].hasOwnProperty('panel_id')">Results not available.</p>
 					<uib-tabset active="active_FMBlood[1][keyBase]" ng-show="valueBase['1'].hasOwnProperty('panel_id')">
 					<div ng-repeat="(version, value) in valueBase" 
@@ -1423,9 +1462,17 @@
 					     ng-show="key!='specimen' && run.hasOwnProperty('tmb_status')">
 						<h2 ng-show="valueBase.hasOwnProperty('2')">Run {{key}}</h2> -->
 						<p>TMB: <span>{{value.tmb_status}}<span ng-show="value.tmb_score!=''">; </span>{{value.tmb_score}} {{value.tmb_unit}}</span></p>
-						<p>Microsatellite Status: <span ng-if="value.microsatellite_status!='MSS'">{{value.microsatellite_status}}</span><span ng-if="value.microsatellite_status=='MSS'">Cannot Be Determined</span></p>
-						<p>Tumour Fraction Score: <span>{{value.tumour_fraction_score}} {{value.tumour_fraction_unit}}</span>
+						<p>Microsatellite Status: <span ng-if="value.microsatellite_status!='MSI-H'">MSI-High Not Detected</span>
+						<span ng-if="value.microsatellite_status=='MSI-H'">MSI-High</span></p>
+						<p>Tumour Fraction Score: 
+						<span ng-show="value.tumour_fraction_score==0">Elevated Tumour Fraction Not Detected</span>
+						<span ng-show="value.tumour_fraction_score==-1">Cannot Be Determined</span>
+						<span ng-show="value.tumour_fraction_score!=0 && value.tumour_fraction_score!=-1 ">{{value.tumour_fraction_score}} {{value.tumour_fraction_unit}}</span>
 						<!-- <p>Percentage with 100x read depth: <span>{{value.percent_exons_100x}}</span></p>-->
+						<p ng-show="value.loss_of_heterozygosity!='Not reported'">Loss of Heterozygosity Score:
+							<span ng-show="value.loss_of_heterozygosity==-1">Cannot Be Determined</span>
+							<span ng-show="value.loss_of_heterozygosity!=-1">{{value.loss_of_heterozygosity}} {{value.loss_of_heterozygosity_unit}}</span>
+						</p>
 						<div class="fm_headline">
 							<h3>Genomic Alterations Identified</h3>
 							<h4>Short Variants</h4>
@@ -1449,7 +1496,7 @@
 											<div ng-include="loadComponent('fmbloodtick')"></div>
 										</td>
 										<td><em>{{gene.geneName}}</em></td>
-										<td
+										<td class="break_word"
 											ng-bind-html="trustAsHtml(gene.result)"></td>
 										<td>{{gene.variant_allele_frequency}}</td>
 										<td>{{gene.read_depth}}</td>
@@ -1583,7 +1630,7 @@
 									<tr
 										ng-repeat="gene in value.short_variants | filterterm:'is_significant':'false' | orderBy:'geneName'">
 										<td><em>{{gene.geneName}}</em></td>
-										<td
+										<td class="break_word"
 											ng-bind-html="trustAsHtml(gene.result)"></td>
 										<td>{{gene.variant_allele_frequency}}</td>
 										<td>{{gene.read_depth}}</td>
@@ -2378,7 +2425,7 @@
 						<tr ng-repeat="mutation in currentPatient.significantMutations.summery | unique3 : 'gene':'description':'source' | orderBy:MOView.orderByField:MOView.order>1" 
 							ng-class="{'grey':mutation.newlySelected=='true'}">
 							<td>{{mutation.gene}}</td>
-							<td ng-bind-html="trustAsHtml(mutation.description)"></td>
+							<td class="break_word limit_width" ng-bind-html="trustAsHtml(mutation.description)"></td>
 							<td>{{mutation.type}}</td>
 							<td>{{mutation.source.replace("_"," ");}}</td>
 							<td><span ng-repeat="genes in currentPatient.significantMutations.summery | unique4 : 'gene':'description':'source':'timepoint' | orderBy:'timepoint'"
@@ -2410,9 +2457,9 @@
 				<table >
 					<tr>
 						<th style="min-width: 100px">Date discussed</th>
-						<th width="24%">Outcome</th>
-						<th width="30%">Notes</th>
-						<th width="16%">Short Variants</th>
+						<th style="width: 24%; min-width: 200px">Outcome</th>
+						<th style="width: 30%; min-width:100px">Notes</th>
+						<th style="width: 16%">Short Variants</th>
 						<th width="18%">Rearrangements</th>
 						<th width="12%">CNAs</th>
 						<th style="min-width: 100px">Last Updated</th>
@@ -2423,43 +2470,27 @@
 					<tr ng-show="meeting.new" id="meeting-add">
 						<td valign="top"><input ng-model="meeting.add.date"
 							type="text" id="datepicker"></td>
-						<td valign="top"><select ng-model="meeting.add.outcome"
+						<td valign="top"><select style="width:300px" ng-model="meeting.add.outcome"
 							multiple>
-								<option value="Further Standard of Care Treatment">Further Standard of Care Treatment</option>
-								<option value="Clinical Trial Recommended Locally">Clinical
-									Trial Recommended Locally</option>
-								<option value="Clinical Trial Recommended Elsewhere">Clinical
-									Trial Recommended Elsewhere</option>
-								<option value="Actionable - Explore Clinical Trial Options">Actionable
-									- Explore Clinical Trial Options</option>
-								<option value="Actionable But No Clinical Trial Available">Actionable
-									But No Clinical Trial Available</option>
-								<option value="Further Analysis / Information Required">Further
-									Analysis / Information Required</option>
-								<option value="Further Translational Research">Further
-									Translational Research</option>
-								<option value="Patient Deteriorated - No Longer Suitable">Patient
-									Deteriorated - No Longer Suitable</option>
-								<option value="Nil Actionable">Nil Actionable</option>
-								<option value="Relisted For Next MTB">Relisted For Next
-									MTB</option>
-								<option value="Not Referred to MTB">Not Referred to MTB</option>
+								<c:forEach var="outcome" items="${meetingoutcomes}" varStatus="loop">
+									<option value="${outcome}">${outcome}</option>
+								</c:forEach>
 						</select></td>
 						<td valign="top">
 							<textarea ng-model="meeting.add.notes"></textarea>
 						</td>
-						<td id="significant-mutations" valign="top">
-							<div
+						<td id="significant-mutations" valign="top"; style="max-width: 150px;">
+							<div class="break_word_short"
 								ng-repeat="mutation in currentPatient.significantMutations.meetingOutcomeSummarySV  | unique_list track by $index">
 								{{mutation}}</div>
 						</td>
-						<td>
-							<div
+						<td style="max-width: 150px;">
+							<div class="break_word_short"
 								ng-repeat="mutation in currentPatient.significantMutations.meetingOutcomeSummaryR  | unique_list track by $index">
 								{{mutation}}</div>
 						</td>
-						<td>
-							<div
+						<td style="max-width: 150px;">
+							<div class="break_word_short"  
 								ng-repeat="mutation in currentPatient.significantMutations.meetingOutcomeSummaryCNA  | unique_list track by $index">
 								{{mutation}}</div>
 						</td>
@@ -2474,26 +2505,10 @@
 						<td id="outcome{{$index}}" width="15%" min-width="200px">
 						  <span id="editoutcome{{$index}}" ng-show="!showedit(outcome{{$index}}edit)">{{meeting.outcome}}<span class="icon-right" ng-include="loadComponent('editmeetingoutcome')"></span></span>
 						  <span id="selectoutcome{{$index}}" ng-show="showedit(outcome{{$index}}edit)">
-						    <select ng-model="meeting.edit.outcome" multiple>
-						    	<option value="Further Standard of Care Treatment">Further Standard of Care Treatment</option>
-								<option value="Clinical Trial Recommended Locally">Clinical
-									Trial Recommended Locally</option>
-								<option value="Clinical Trial Recommended Elsewhere">Clinical
-									Trial Recommended Elsewhere</option>
-								<option value="Actionable - Explore Clinical Trial Options">Actionable
-									- Explore Clinical Trial Options</option>
-								<option value="Actionable But No Clinical Trial Available">Actionable
-									But No Clinical Trial Available</option>
-								<option value="Further Analysis / Information Required">Further
-									Analysis / Information Required</option>
-								<option value="Further Translational Research">Further
-									Translational Research</option>
-								<option value="Patient Deteriorated - No Longer Suitable">Patient
-									Deteriorated - No Longer Suitable</option>
-								<option value="Nil Actionable">Nil Actionable</option>
-								<option value="Relisted For Next MTB">Relisted For Next
-									MTB</option>
-								<option value="Not Referred to MTB">Not Referred to MTB</option>
+						    <select style="width:300px" ng-model="meeting.edit.outcome" multiple>
+						    	<c:forEach var="outcome" items="${meetingoutcomes}" varStatus="loop">
+									<option value="${outcome}">${outcome}</option>
+								</c:forEach>
 							</select>
 							<i class="fa fa-times icon-right" aria-hidden="true" ng-click="$parent.cancelEditMeetingOutcome($event,$index)"></i><i class="fa fa-check icon-right" aria-hidden="true" ng-click="$parent.saveEditMeetingOutcome($event,$index)"></i>
 						  </span>
@@ -2507,7 +2522,7 @@
 						</td>
 						<td>
 						    <!-- <div class="tooltip"> -->
-							<div ng-repeat="mutation in [].concat(meeting.ctDNA).concat(meeting.tumourNGS).concat((meeting.fmBlood.hasOwnProperty('FMBloodSV'))?meeting.fmBlood.FMBloodSV:[])
+							<div class="break_word_short" ng-repeat="mutation in [].concat(meeting.ctDNA).concat(meeting.tumourNGS).concat((meeting.fmBlood.hasOwnProperty('FMBloodSV'))?meeting.fmBlood.FMBloodSV:[])
 							 .concat((meeting.fmTumour.hasOwnProperty('FMTumourSV'))?meeting.fmTumour.FMTumourSV:[]).concat(getGenericGenomicMOPart(meeting, 'SV')) | unique : 'geneName':'result' track by $index">
 								<div>{{mutation.geneName}} {{mutation.result}}</div>
 							</div>
@@ -2523,14 +2538,14 @@
 							MY_SCOPE.meeting.outcome[0].genericGenomic[Object.keys(MY_SCOPE.meeting.outcome[0].genericGenomic)][Object.keys(MY_SCOPE.meeting.outcome[0].genericGenomic[Object.keys(MY_SCOPE.meeting.outcome[0].genericGenomic)]).filter(function(word) { return word.endsWith('R'); })]
 meeting.genericGenomic[Object.keys(meeting.genericGenomic)][Object.keys(meeting.genericGenomic[Object.keys(meeting.genericGenomic)]).filter(function(word) { return word?word.endsWith('R'):''})]
 							 -->
-							<div ng-repeat="r in [].concat((meeting.fmBlood.hasOwnProperty('FMBloodR'))?meeting.fmBlood.FMBloodR:[])
+							<div class="break_word_short" ng-repeat="r in [].concat((meeting.fmBlood.hasOwnProperty('FMBloodR'))?meeting.fmBlood.FMBloodR:[])
 								.concat((meeting.fmTumour.hasOwnProperty('FMTumourR'))?meeting.fmTumour.FMTumourR:[])
 								.concat(getGenericGenomicMOPart(meeting, 'R')) | unique : 'gene1' : 'gene2' track by $index">
 								<div>{{r.gene1}} {{r.gene2}} {{r.description}}</div>
 							</div>
 							</td>
 							<td>
-							<div ng-repeat="cna in [].concat((meeting.fmBlood.hasOwnProperty('FMBloodCNA'))?meeting.fmBlood.FMBloodCNA:[])
+							<div class="break_word_short" ng-repeat="cna in [].concat((meeting.fmBlood.hasOwnProperty('FMBloodCNA'))?meeting.fmBlood.FMBloodCNA:[])
 								.concat((meeting.fmTumour.hasOwnProperty('FMTumourCNA'))?meeting.fmTumour.FMTumourCNA:[]).concat(getGenericGenomicMOPart(meeting, 'CNA')) | unique : 'geneName' : 'type' track by $index">
 								<div>{{cna.geneName}} {{cna.type}}</div>
 							</div>

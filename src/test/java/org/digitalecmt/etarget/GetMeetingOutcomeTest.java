@@ -28,14 +28,13 @@ package org.digitalecmt.etarget;
 
 import static org.junit.Assert.*;
 
-import org.digitalecmt.etarget.GetMeetingOutcome;
 import org.junit.Test;
 
 public class GetMeetingOutcomeTest {
 
 	@Test
 	public void test() {
-		GetMeetingOutcome mo = new GetMeetingOutcome("anja.leblanc@aps.idecide.science", "6");
+		org.digitalecmt.etarget.GetMeetingOutcome mo = new org.digitalecmt.etarget.GetMeetingOutcome("anja.leblanc@aps.idecide.science", "6");
 		String result = mo.processRequest();
 		System.out.println(result);
 		assertTrue(result.length()>0);
@@ -46,7 +45,7 @@ public class GetMeetingOutcomeTest {
 	
 	@Test
 	public void test1() {
-		GetMeetingOutcome mo = new GetMeetingOutcome("anja.leblanc@apps.idecide.science", "6");
+		org.digitalecmt.etarget.GetMeetingOutcome mo = new org.digitalecmt.etarget.GetMeetingOutcome("anja.leblanc@apps.idecide.science", "6");
 		String result = mo.processRequest();
 		System.out.println(result);
 		assertTrue(result.length()>0);
@@ -55,7 +54,7 @@ public class GetMeetingOutcomeTest {
 	
 	@Test
 	public void test2() {
-		GetMeetingOutcome mo = new GetMeetingOutcome("anja.leblanc@apps.idecide.science", null);
+		org.digitalecmt.etarget.GetMeetingOutcome mo = new org.digitalecmt.etarget.GetMeetingOutcome("anja.leblanc@apps.idecide.science", null);
 		String result = mo.processRequest();
 		System.out.println(result);
 		assertTrue(result.length()>0);
@@ -64,7 +63,7 @@ public class GetMeetingOutcomeTest {
 	
 	@Test
 	public void test3() {
-		GetMeetingOutcome mo = new GetMeetingOutcome("anja.leblanc@apps.idecide.science", "1000");
+		org.digitalecmt.etarget.GetMeetingOutcome mo = new org.digitalecmt.etarget.GetMeetingOutcome("anja.leblanc@apps.idecide.science", "1000");
 		String result = mo.processRequest();
 		System.out.println(result);
 		assertTrue(result.length()>0);
@@ -73,7 +72,7 @@ public class GetMeetingOutcomeTest {
 	
 	@Test
 	public void test4() {
-		GetMeetingOutcome mo = new GetMeetingOutcome("anja.leblanc@apps.idecide.science", "12");
+		org.digitalecmt.etarget.GetMeetingOutcome mo = new org.digitalecmt.etarget.GetMeetingOutcome("anja.leblanc@apps.idecide.science", "12");
 		String result = mo.processRequest();
 		System.out.println(result);
 		assertTrue(result.length()>0);

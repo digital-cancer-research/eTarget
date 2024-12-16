@@ -33,10 +33,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.digitalecmt.etarget.dao.EditLockDAO;
-import org.digitalecmt.etarget.dao.GeneNameDAO;
 import org.digitalecmt.etarget.dao.GeneSubsetDAO;
 import org.digitalecmt.etarget.dao.NgsLibDAO;
-import org.digitalecmt.etarget.dbentities.GeneName;
 import org.digitalecmt.etarget.dbentities.GeneSubsetExt;
 import org.digitalecmt.etarget.dbentities.NgsLibExt;
 import org.digitalecmt.etarget.support.Formater;

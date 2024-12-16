@@ -54,7 +54,7 @@ public class ReportDAOImpl extends JdbcDaoSupport implements ReportDAO {
 	public Boolean deleteReportBySpecimenRun(int specimen_id, int run) {
 		try {
 			JdbcTemplate template = getJdbcTemplate();
-			Integer gene_panel_id = template.queryForObject(selectGenePanelId, new Object[] {specimen_id,run}, Integer.class);
+			Integer gene_panel_id = template.queryForObject(selectGenePanelId, Integer.class, specimen_id,run);
 			template.update(deletePathLabRef,new Object[] {gene_panel_id});
 			template.update(deleteReport,new Object[] {gene_panel_id});
 			template.update(deleteSelected,new Object[] {gene_panel_id});

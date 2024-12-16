@@ -27,7 +27,7 @@ package org.digitalecmt.etarget;
  */
 
 import java.util.*;
-import java.util.Date;
+//import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -275,19 +275,19 @@ public class API {
   public String fetchHTMLComponent(String component, String userID, String personID) {
     //// This implements a permission system for sections of the web application
     // Check the current user has permission for the requested component
-	  Date start = Calendar.getInstance().getTime();
+//	  Date start = Calendar.getInstance().getTime();
     if(this.isUserPermittedComponent(userID, component) && this.checkAccessPermission(component, userID, personID)) {
       // Return the requested block of HTML
       try {
-    	  Date step1 = Calendar.getInstance().getTime();
+//    	  Date step1 = Calendar.getInstance().getTime();
         String content = "";
         String path = resource.getString("webapp.include.path");
         //String path = System.getProperty("catalina.base")+"\\site\\wwwroot\\webapps\\ROOT\\includes\\";
         //String path = "D:\\home\\site\\wwwroot\\webapps\\ROOT\\includes\\";
         log.info("include path " + path);
-        Date step2 = Calendar.getInstance().getTime();
+//        Date step2 = Calendar.getInstance().getTime();
         content = new String(Files.readAllBytes(Paths.get(path+component+".html")));
-        Date finish = Calendar.getInstance().getTime();
+//        Date finish = Calendar.getInstance().getTime();
         return content;
       } catch(Exception e) {
         System.out.println(e);

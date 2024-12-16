@@ -26,7 +26,7 @@ package org.digitalecmt.etarget.dao;
  * #L%
  */
 
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -35,7 +35,7 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 public class UserAccessDAOImpl extends JdbcDaoSupport implements UserAccessDAO {
 
-	private static final Logger log = Logger.getLogger(UserAccessDAOImpl.class.getName());
+//	private static final Logger log = Logger.getLogger(UserAccessDAOImpl.class.getName());
 	
 	private String componentQuery="select count(*) from COMPONENTS\n" + 
 			"LEFT JOIN USER_ROLES on COMPONENTS.roleID=USER_ROLES.roleID\n" + 
@@ -58,7 +58,7 @@ public class UserAccessDAOImpl extends JdbcDaoSupport implements UserAccessDAO {
 	@Override
 	public Boolean isUserAllowedComponent(String userID, String component) {
 		JdbcTemplate template = getJdbcTemplate();
-		Integer count=template.queryForObject(componentQuery,new Object[] {userID, component}, Integer.class);
+		Integer count=template.queryForObject(componentQuery, Integer.class, userID, component);
 		if(count>0) return Boolean.TRUE;
 		return Boolean.FALSE;
 	}
@@ -66,7 +66,7 @@ public class UserAccessDAOImpl extends JdbcDaoSupport implements UserAccessDAO {
 	@Override
 	public Boolean isUserAllowedEndpoint(String userID, String endpoint) {
 		JdbcTemplate template = getJdbcTemplate();
-		Integer count=template.queryForObject(endpointQuery,new Object[] {userID, endpoint}, Integer.class);
+		Integer count=template.queryForObject(endpointQuery, Integer.class, userID, endpoint);
 		if(count>0) return Boolean.TRUE;
 		return Boolean.FALSE;
 	}
@@ -83,7 +83,7 @@ public class UserAccessDAOImpl extends JdbcDaoSupport implements UserAccessDAO {
 	
 	public Boolean isUserOfType(String userID, String role) {
 		JdbcTemplate template = getJdbcTemplate();
-		Integer count=template.queryForObject(queryRole, new Object[] {userID, role}, Integer.class);
+		Integer count=template.queryForObject(queryRole, Integer.class, userID, role);
 		if(count>0) return Boolean.TRUE;
 		return Boolean.FALSE;
 	}

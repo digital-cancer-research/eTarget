@@ -35,10 +35,10 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.digitalecmt.etarget.API;
 import org.digitalecmt.etarget.config.TargetConfiguration;
 import org.digitalecmt.etarget.dao.ChangeLogDAO;
@@ -47,7 +47,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 @Path("/report")
-public class RestAPI extends Application {
+public class RestAPI {
 	private static final Logger log = Logger.getLogger(RestAPI.class.getName());
 	private ApplicationContext appContext;
 //	private ResourceBundle resource;
@@ -62,6 +62,7 @@ public class RestAPI extends Application {
 	@DELETE
 	public Response deleteReport(@HeaderParam("x-ms-client-principal-name") String loggedInUserID , @PathParam("specimen_id") String specimen, @PathParam("run") String run) {
 		log.info("delete called " + specimen + " " + run);
+		loggedInUserID = StringEscapeUtils.unescapeHtml4(loggedInUserID);
 		if (!new API().isUserPermittedEndpoint(loggedInUserID, "DeleteReport")) {
 			// Stop the request if user doesn't have permission for this API or web
 			// component
@@ -95,5 +96,5 @@ public class RestAPI extends Application {
 	public Response info() {
 		return Response.ok("Info called").build();
 	}
-
+	
 }

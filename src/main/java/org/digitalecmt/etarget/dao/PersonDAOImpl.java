@@ -45,6 +45,8 @@ public class PersonDAOImpl extends JdbcDaoSupport implements PersonDAO {
 			"left join SPECIMEN on SPECIMEN.specimen_id=MEASUREMENT_GENE_PANEL.specimen_id\n" + 
 			"where SPECIMEN.person_id=? and filename is not null";
 	
+	private String updateDiscussionStatus="update PERSON set discuss=? where person_id=?";
+	
 	
 	
 	public PersonDAOImpl(DataSource dataSource) {
@@ -54,7 +56,7 @@ public class PersonDAOImpl extends JdbcDaoSupport implements PersonDAO {
 	@Override
 	public String getTarId(int person_id) {
 		JdbcTemplate template = getJdbcTemplate();
-		String tar_id = template.queryForObject(selectTarId, new Object[] {person_id}, String.class);
+		String tar_id = template.queryForObject(selectTarId, String.class, person_id);
 		return tar_id;
 	}
 	
@@ -75,8 +77,14 @@ public class PersonDAOImpl extends JdbcDaoSupport implements PersonDAO {
 	@Override
 	public List<String> getReports(int person_id) {
 		JdbcTemplate template = getJdbcTemplate();
-		List<String> reports = template.queryForList(selectReports, new Object[] {person_id}, String.class);
+		List<String> reports = template.queryForList(selectReports, String.class, person_id);
 		return reports;
+	}
+
+	@Override
+	public Integer updateDisussionStatus(int person_id, boolean discuss) {
+		JdbcTemplate template = getJdbcTemplate();
+		return template.update(updateDiscussionStatus, discuss, person_id);
 	}
 
 }

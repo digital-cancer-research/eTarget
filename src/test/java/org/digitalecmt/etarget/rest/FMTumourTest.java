@@ -28,9 +28,6 @@ package org.digitalecmt.etarget.rest;
 
 import static org.junit.Assert.assertTrue;
 
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Response;
-
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
@@ -39,7 +36,7 @@ import org.junit.Test;
 public class FMTumourTest extends JerseyTest{
 	
 	@Override
-    protected Application configure() {
+    protected javax.ws.rs.core.Application configure() {
         return new ResourceConfig(FMTumour.class);
     }
 	
@@ -53,14 +50,14 @@ public class FMTumourTest extends JerseyTest{
 
 	@Test
     public void fmUserNotAllowedTest() {
-        Response response = target("FMTumour/19").request().header("x-ms-client-principal-name", "anja@apps.idecide.science").get();
+		javax.ws.rs.core.Response response = target("FMTumour/19").request().header("x-ms-client-principal-name", "anja@apps.idecide.science").get();
         assertTrue(response.getStatus()==403);
         System.out.println(response);
 	}
 	
 	@Test
     public void fmUserWrongUserIDTest() {
-        Response response = target("FMTumour/a19").request().header("x-ms-client-principal-name", "anja.leblanc@apps.idecide.science").get();
+		javax.ws.rs.core.Response response = target("FMTumour/a19").request().header("x-ms-client-principal-name", "anja.leblanc@apps.idecide.science").get();
         assertTrue(response.getStatus()==404);
         System.out.println(response);
 	}

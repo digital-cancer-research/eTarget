@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.digitalecmt.etarget.config.TargetConfiguration;
 import org.digitalecmt.etarget.dbentities.MeetingOutcomeGeneVariant;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -44,7 +45,9 @@ public class MeetingOutcomeGeneVariantDAOTest {
 	@BeforeClass
 	public static void setUpClass() {
 		try {
+			System.out.println("before setup");
 			context = new AnnotationConfigApplicationContext(TargetConfiguration.class);
+			System.out.println("after setup");
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -58,6 +61,8 @@ public class MeetingOutcomeGeneVariantDAOTest {
 		mogv.addGeneVariantToMeetingOutcome(2, 22, "CTDNA");
 		mogv.addGeneVariantToMeetingOutcome(2, 33, "CTDNA");
 		List<MeetingOutcomeGeneVariant> result=mogv.getGeneVariantsForMeetingOutcome(2);
+		System.out.println(result.size());
+		System.out.println(result);
 		assertTrue(result.size()==2);
 		assertTrue(result.get(0).getMeasurement_gene_variant_id()==22);
 		assertTrue(result.get(0).getType().equals("CTDNA"));
@@ -68,6 +73,15 @@ public class MeetingOutcomeGeneVariantDAOTest {
 		mogv.removeGeneVariantFromMeetingOutcome(2, 33, "CTDNA");
 		result=mogv.getGeneVariantsForMeetingOutcome(2);
 		assertTrue(result.size()==0);
+	}
+	
+	@AfterClass
+	public static void cleanUp() {
+		MeetingOutcomeGeneVariantDAO mogv = context.getBean(MeetingOutcomeGeneVariantDAO.class);
+		mogv.removeGeneVariantFromMeetingOutcome(1, 100, "CTDNA");
+		mogv.removeGeneVariantFromMeetingOutcome(1, 101, "NGS");
+		mogv.removeGeneVariantFromMeetingOutcome(2, 22, "CTDNA");
+		mogv.removeGeneVariantFromMeetingOutcome(2, 33, "CTDNA");
 	}
 
 }

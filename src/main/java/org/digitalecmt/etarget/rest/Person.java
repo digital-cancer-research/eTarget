@@ -39,10 +39,10 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.digitalecmt.etarget.API;
 import org.digitalecmt.etarget.config.TargetConfiguration;
 import org.digitalecmt.etarget.dao.ChangeLogDAO;
@@ -57,7 +57,7 @@ import com.microsoft.azure.storage.blob.CloudBlockBlob;
 import com.microsoft.azure.storage.blob.ListBlobItem;
 
 @Path("/person")
-public class Person extends Application {
+public class Person {
 	private static final Logger log = Logger.getLogger(Person.class.getName());
 	private ApplicationContext appContext;
 	static ResourceBundle resource;
@@ -78,6 +78,7 @@ public class Person extends Application {
 	@DELETE
 	public Response deletePerson(@HeaderParam("x-ms-client-principal-name") String loggedInUserID , @PathParam("person_id") String person_id) {
 		log.info("delete called " + person_id );
+		loggedInUserID = StringEscapeUtils.unescapeHtml4(loggedInUserID);
 		if (!new API().isUserPermittedEndpoint(loggedInUserID, "DeletePatient")) {
 			// Stop the request if user doesn't have permission for this API or web
 			// component

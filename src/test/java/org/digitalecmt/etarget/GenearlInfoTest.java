@@ -28,14 +28,13 @@ package org.digitalecmt.etarget;
 
 import static org.junit.Assert.*;
 
-import org.digitalecmt.etarget.GeneralInfo;
 import org.junit.Test;
 
 public class GenearlInfoTest {
 
 	@Test
 	public void test1() {
-		GeneralInfo gi= new GeneralInfo("anja.leblanc@apps.idecide.science", "12");
+		GeneralInfo gi= new org.digitalecmt.etarget.GeneralInfo("anja.leblanc@apps.idecide.science", "12");
 		String result = gi.processRequest();
 		System.out.println(result);
 		assertTrue(result.length()>0);
@@ -44,7 +43,7 @@ public class GenearlInfoTest {
 	
 	@Test
 	public void testNullValue() {
-		GeneralInfo gi= new GeneralInfo("anja.leblanc@apps.idecide.science", "3");
+		GeneralInfo gi= new org.digitalecmt.etarget.GeneralInfo("anja.leblanc@apps.idecide.science", "3");
 		String result = gi.processRequest();
 		System.out.println(result);
 		assertTrue(result.length()>0);
@@ -54,21 +53,21 @@ public class GenearlInfoTest {
 	//API tests
 	@Test
 	public void testAdminUser() {
-		GeneralInfo gi= new GeneralInfo("anja.leblanc@apps.idecide.science", "3");
+		GeneralInfo gi= new org.digitalecmt.etarget.GeneralInfo("anja.leblanc@apps.idecide.science", "3");
 		assertFalse(gi.isAdmin("anja.leblanc@apps.idecide.science"));
 		assertTrue(gi.isAdmin("anja@bindrich.de"));
 	}
 	
 	@Test
 	public void testDisabledUser() {
-		GeneralInfo gi= new GeneralInfo("anja.leblanc@apps.idecide.science", "3");
+		GeneralInfo gi= new org.digitalecmt.etarget.GeneralInfo("anja.leblanc@apps.idecide.science", "3");
 		assertFalse(gi.isUserDeactivated("anja.leblanc@apps.idecide.science"));
 		assertTrue(gi.isUserDeactivated("rob.dunne@apps.idecide.science"));
 	}
 
 	@Test
 	public void testIsDeletable() {
-		GeneralInfo gi= new GeneralInfo("anja@bindrich.de", "6");
+		GeneralInfo gi= new org.digitalecmt.etarget.GeneralInfo("anja@bindrich.de", "6");
 		String result = gi.processRequest();
 		System.out.println(result);
 		assertTrue(result.length()>0);
@@ -77,7 +76,7 @@ public class GenearlInfoTest {
 	
 	@Test
 	public void testIsDeletable2() {
-		GeneralInfo gi= new GeneralInfo("anja@bindrich.de", "13");
+		GeneralInfo gi= new org.digitalecmt.etarget.GeneralInfo("anja@bindrich.de", "13");
 		String result = gi.processRequest();
 		System.out.println(result);
 		assertTrue(result.length()>0);

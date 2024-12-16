@@ -27,19 +27,18 @@ package org.digitalecmt.etarget.dao;
  */
 
 import java.util.List;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import org.digitalecmt.etarget.dbentities.IHCReport;
-import org.digitalecmt.etarget.dbentities.MeetingOutcome;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 public class IHCReportDAOImpl extends JdbcDaoSupport implements IHCReportDAO {
 	
-	private static final Logger log = Logger.getLogger(IHCReportDAOImpl.class.getName());
+//	private static final Logger log = Logger.getLogger(IHCReportDAOImpl.class.getName());
 	
 	private static String selection="ihc_report_id,sample_received_date,report_date,cd3_total_tissue_area,cd3_intratumoural,cd3_intrastromal,cd8_total_tissue_area,cd8_intratumoural,cd8_intrastromal,pdl1_tps,estimated_results,comments,ingestion_date, SPECIMEN.person_id, SPECIMEN.specimen_date, SPECIMEN.preclin_id, SPECIMEN.specimen_id";
 	private static String select="select "+selection+" from SPECIMEN LEFT JOIN IHC_REPORT on SPECIMEN.specimen_id=IHC_REPORT.specimen_id where (SPECIMEN.specimen_concept_id=2 or SPECIMEN.specimen_concept_id=3) and SPECIMEN.person_id=?";
@@ -52,8 +51,9 @@ public class IHCReportDAOImpl extends JdbcDaoSupport implements IHCReportDAO {
 	public List<IHCReport> getIHCReport(Integer personID) {
 		List<IHCReport> values = null;
 		JdbcTemplate template = getJdbcTemplate();
-		values= template.query(select, new Object[] {personID}, 
-				new BeanPropertyRowMapper<IHCReport>(IHCReport.class));
+		values= template.query(select,
+				new BeanPropertyRowMapper<IHCReport>(IHCReport.class),
+				personID);
 		return values;
 	}
 

@@ -28,7 +28,6 @@ package org.digitalecmt.etarget.dao;
 
 import static org.junit.Assert.*;
 
-import java.time.Month;
 import java.util.Calendar;
 import java.util.List;
 

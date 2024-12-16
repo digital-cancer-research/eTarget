@@ -26,6 +26,8 @@
 <div id="patient-table-filter">
 	<label>Patient ID: <input type="text" class="form-control" ng-model="targetIDFilter" /></label>
 	<label>Site: <input type="text" class="form-control" ng-model="siteFilter" /></label>
+	<label>Status: <input type="text" class="form-control" ng-model="statusFilter" /></label>
+	<label ng-show="discuss=='true'">For National MTB: <input type="checkbox" class="form-control" ng-model="$parent.discussFilter" ng-change="resetDiscussFilter()" /></label>
 </div>
 <table id="patient-table">
 	<thead>
@@ -78,6 +80,13 @@
 					class="fa fa-sort-desc" aria-hidden="true"></i>
 			</span><i ng-show="patientView.order==0" class="fa fa-sort" aria-hidden="true"></i>
 			</th>
+			<th ng-show="discuss=='true'" ng-click="definePatientOrder('discuss')">Discuss at National MTB
+				<span ng-show="patientView.orderByField == 'discuss'"> <i
+					ng-show="patientView.order==1" class="fa fa-sort-asc"
+					aria-hidden="true"></i> <i ng-show="patientView.order==2"
+					class="fa fa-sort-desc" aria-hidden="true"></i>
+			</span><i ng-show="patientView.order==0" class="fa fa-sort" aria-hidden="true"></i>
+			</th>
 			<th
 				ng-click="definePatientOrder('mtbDate')">Date
 				Last Discussed at MTB <span
@@ -99,7 +108,7 @@
 	</thead>
 	<tbody>
 		<tr
-			ng-repeat="patient in $parent.allPatients|filter:{targetID:targetIDFilter}|filter:{careSite:siteFilter}|orderBy:patientView.orderByField:patientView.order>1:compareFunc"
+			ng-repeat="patient in $parent.allPatients|filter:{targetID:targetIDFilter}|filter:{careSite:siteFilter}|filter:{status:statusFilter}|filter:{discuss:$parent.discussFilter}|orderBy:patientView.orderByField:patientView.order>1:compareFunc"
 			class="row-border hover">
 			<td ng-show="$parent.allPatients[0].delete!=null"><i style="padding-right: 10px;" class="fa fa-times icon-right" aria-hidden="true" ng-click="$parent.deletePatient(patient.personID)"></i></td>
 			<td ng-click="$parent.showPage('detail', patient.personID);"><strong>{{patient.targetID}}</strong></td>
@@ -108,6 +117,10 @@
 			<td ng-click="$parent.showPage('detail', patient.personID);">{{patient.conditionName}}</td>
 			<td ng-click="$parent.showPage('detail', patient.personID);">{{patient.consultantName}}</td>
 			<td ng-click="$parent.showPage('detail', patient.personID);" class="linebreaks">{{patient.status}}</td>
+			<td ng-show="discuss=='true'">
+				<div ng-include="'rest/component/discusscheckbox'"></div>
+				<div ng-include="'rest/component/discusstick'"></div>
+			</td>
 			<td ng-click="$parent.showPage('detail', patient.personID);">{{patient.mtbDate}}</td>
 			<td ng-click="$parent.showPage('detail', patient.personID);" ng-show="$parent.allPatients[0].requirePrinting!=null"><i ng-show="patient.requirePrinting=='true'" class="fa fa-check" aria-hidden="true"></i></td> 
 		</tr>

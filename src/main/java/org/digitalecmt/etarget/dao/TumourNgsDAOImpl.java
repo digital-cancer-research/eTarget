@@ -58,8 +58,8 @@ public class TumourNgsDAOImpl extends JdbcDaoSupport implements TumourNgsDAO {
 		List<TumourNgs> values=null;
 		try {
 			JdbcTemplate template = getJdbcTemplate();
-			values= template.query(queryPerson, new Object[] {personID}, 
-					new BeanPropertyRowMapper<TumourNgs>(TumourNgs.class));
+			values= template.query(queryPerson,
+					new BeanPropertyRowMapper<TumourNgs>(TumourNgs.class), personID);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -72,8 +72,8 @@ public class TumourNgsDAOImpl extends JdbcDaoSupport implements TumourNgsDAO {
 		//JdbcTemplate jdbcTemplate = new JdbcTemplate(this.dataSource);
 		try {
 			JdbcTemplate template = getJdbcTemplate();
-			values= template.query(queryGeneVarient, new Object[] {personID, geneVarientID}, 
-					new BeanPropertyRowMapper<TumourNgs>(TumourNgs.class));
+			values= template.query(queryGeneVarient,  
+					new BeanPropertyRowMapper<TumourNgs>(TumourNgs.class), personID, geneVarientID);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

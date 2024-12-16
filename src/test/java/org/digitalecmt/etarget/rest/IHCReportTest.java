@@ -27,9 +27,6 @@ package org.digitalecmt.etarget.rest;
  */
 
 
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Response;
-
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
@@ -38,7 +35,7 @@ import org.junit.Test;
 public class IHCReportTest extends JerseyTest{
 	
 	@Override
-    protected Application configure() {
+    protected javax.ws.rs.core.Application configure() {
         return new ResourceConfig(IHCReport.class);
     }
 	@Test
@@ -60,7 +57,7 @@ public class IHCReportTest extends JerseyTest{
 	
 	@Test
 	public void getIHCReportNotAllowedTest() {
-		Response response = target("IHCReport/6").request().header("x-ms-client-principal-name", "anjaleblanc@apps.idecide.science").get();
+		javax.ws.rs.core.Response response = target("IHCReport/6").request().header("x-ms-client-principal-name", "anjaleblanc@apps.idecide.science").get();
         System.out.println(response);
         Assert.assertTrue(response.getStatus()==403);
 	}

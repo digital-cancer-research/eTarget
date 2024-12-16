@@ -525,3 +525,39 @@ JOIN MEASUREMENT_GENE_VARIANT mv on mp.measurement_gene_panel_id=mv.measurement_
 LEFT OUTER join CONCEPT_GENE c on mv.gene_concept_id=c.gene_concept_id
 LEFT OUTER join CONCEPT_GENE g1 on mv.rearr_gene_1=g1.gene_concept_id
 LEFT OUTER join CONCEPT_GENE g2 on mv.rearr_gene_2=g2.gene_concept_id
+
+/* TNE 231*/
+ALTER TABLE PERSON ADD discuss bit
+
+ALTER VIEW PATIENTS AS
+SELECT PERSON.person_id AS person_id, 
+PERSON.target_id AS target_id, 
+PERSON.consent_date AS consent_date, 
+PERSON.age_at_consent AS age_at_consent,
+PERSON.discuss as discuss,
+PERSON_CONDITIONS_V.condition_name AS condition_name, 
+PERSON_CONDITIONS_V.subtype_name AS subtype_name,
+CONCEPT_CONSULTANT.name AS consultant_name,
+PERSON_CONDITIONS_V.condition_start_date AS condition_start_date,
+CONCEPT_GENDER.gender_name AS gender_name,
+CARE_SITE.care_site_name AS care_site_name
+FROM dbo.PERSON, dbo.PERSON_CONDITIONS_V, dbo.CONCEPT_CONSULTANT, dbo.CONCEPT_GENDER, dbo.CARE_SITE
+WHERE PERSON.person_id = PERSON_CONDITIONS_V.person_id 
+AND PERSON.consultant_concept_id = CONCEPT_CONSULTANT.consultant_concept_id 
+AND PERSON.gender_concept_id = CONCEPT_GENDER.gender_concept_id
+AND PERSON.care_site_id = CARE_SITE.care_site_id
+AND PERSON.person_id > 0;
+
+insert into COMPONENTS (roleID, component) VALUES (1, 'discusscheckbox')
+insert into COMPONENTS (roleID, component) VALUES (2, 'discusstick')
+insert into COMPONENTS (roleID, component) VALUES (3, 'discusstick')
+insert into COMPONENTS (roleID, component) VALUES (6, 'discusstick')
+insert into ENDPOINTS (roleID, endpoint) VALUES (1, 'DiscussMTB')
+insert into ENDPOINTS (roleID, endpoint) VALUES (2, 'DiscussMTB')
+
+/* TNE-252 */
+ALTER TABLE MEASUREMENT_GENE_PANEL ADD loss_of_heterozygosity_score decimal(5,2)
+ALTER TABLE MEASUREMENT_GENE_PANEL ADD loss_of_heterozygosity_unit varchar(50)
+
+/* TNE-360 */
+insert into ENDPOINTS (roleID, endpoint) values (1,'GeneratePatientLetter'),(2,'GeneratePatientLetter'),(3,'GeneratePatientLetter'),(6,'GeneratePatientLetter');

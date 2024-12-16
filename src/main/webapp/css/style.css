@@ -364,7 +364,8 @@ tr[ng-repeat]:hover {
 	color: #fff;
 	text-align: center;
 	border-radius: 6px;
-	width: 200px; Date discussed padding : 5px;
+	width: 200px; 
+    padding : 5px;
 	/* Position the tooltip */
 	position: absolute;
 	z-index: 1;
@@ -431,12 +432,14 @@ tr[ng-repeat]:hover {
 	width: 98%;
 	height: 14.5em;
 	padding: 2%;
+	overflow-x: auto;
 }
 
 #meeting-list select {
 	width: 98%;
 	height: 14.5em;
 	padding: 2%;
+	overflow-x: auto;
 }
 
 #meeting-outcome-updated, #genepanel-saved {
@@ -535,6 +538,22 @@ tr[ng-repeat]:hover {
 
 #result_column {
 	min-width: 200px;
+	size: 300px;
+}
+
+.break_word {
+	word-break: normal;
+	overflow-wrap: anywhere;
+	width: 300px;
+}
+
+.break_word_short {
+	word-break: normal;
+	overflow-wrap: anywhere;
+}
+
+.limit_width {
+	max-width: 400px;
 }
 
 #search #clearsearch {
@@ -759,4 +778,8 @@ tr[ng-repeat]:hover {
 
 .trailfinder_highlight {
 	font-size: 1.2em;
+}
+
+.PatientLetter {
+	float: right;
 }

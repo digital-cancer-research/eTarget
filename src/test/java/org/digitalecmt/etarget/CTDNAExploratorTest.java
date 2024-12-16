@@ -28,7 +28,7 @@ package org.digitalecmt.etarget;
 
 import static org.junit.Assert.*;
 
-import org.digitalecmt.etarget.CTDNAExploratory;
+//import org.digitalecmt.etarget.CTDNAExploratory;
 import org.junit.Test;
 
 public class CTDNAExploratorTest {

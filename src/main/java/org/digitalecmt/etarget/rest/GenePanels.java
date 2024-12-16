@@ -28,12 +28,11 @@ package org.digitalecmt.etarget.rest;
 
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -45,8 +44,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.google.gson.Gson;
 
 @Path("/GenePanels")
-public class GenePanels extends Application {
-	private static final Logger log = Logger.getLogger(GenePanels.class.getName());
+public class GenePanels {
+//	private static final Logger log = Logger.getLogger(GenePanels.class.getName());
 	private ApplicationContext appContext;
 	
 	public GenePanels() {

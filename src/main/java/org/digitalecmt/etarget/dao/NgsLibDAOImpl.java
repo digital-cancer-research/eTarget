@@ -68,8 +68,8 @@ public class NgsLibDAOImpl extends JdbcDaoSupport implements NgsLibDAO {
 		List<NgsLib> values = null;
 		try {
 			JdbcTemplate template = getJdbcTemplate();
-			values= template.query(ngsLibQuery, new Object[] {personID}, 
-					new BeanPropertyRowMapper<NgsLib>(NgsLib.class));
+			values= template.query(ngsLibQuery,
+					new BeanPropertyRowMapper<NgsLib>(NgsLib.class), personID);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -81,7 +81,8 @@ public class NgsLibDAOImpl extends JdbcDaoSupport implements NgsLibDAO {
 		try {
 			JdbcTemplate template = getJdbcTemplate();
 			try {
-				values= template.queryForObject (latest, new Object[] {specimen_id, baseline, run}, new BeanPropertyRowMapper<NgsLib>(NgsLib.class));
+				values= template.queryForObject (latest, new BeanPropertyRowMapper<NgsLib>(NgsLib.class), 
+						specimen_id, baseline, run);
 			}catch (IncorrectResultSizeDataAccessException err) {
 				return null;
 			}
@@ -112,8 +113,8 @@ public class NgsLibDAOImpl extends JdbcDaoSupport implements NgsLibDAO {
 		String value = null;
 		try {
 			JdbcTemplate template = getJdbcTemplate();
-			value= template.queryForObject(tumourPanel, new Object[] {blood_issue_date}, 
-					String.class);
+			value= template.queryForObject(tumourPanel, 
+					String.class, blood_issue_date);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

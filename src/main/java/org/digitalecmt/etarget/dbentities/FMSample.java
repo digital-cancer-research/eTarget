@@ -29,7 +29,7 @@ package org.digitalecmt.etarget.dbentities;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 
 public class FMSample {
@@ -51,7 +51,21 @@ public class FMSample {
 	Float percent_exons_100x;
 	Float tumour_fraction_score;
 	String tumour_fraction_unit;
+	Float  loss_of_heterozygosity_score;
+	String loss_of_heterozygosity_unit;
 
+	public Float getLoss_of_heterozygosity_score() {
+		return loss_of_heterozygosity_score;
+	}
+	public void setLoss_of_heterozygosity_score(Float loss_of_heterozygosity_score) {
+		this.loss_of_heterozygosity_score = loss_of_heterozygosity_score;
+	}
+	public String getLoss_of_heterozygosity_unit() {
+		return loss_of_heterozygosity_unit;
+	}
+	public void setLoss_of_heterozygosity_unit(String loss_of_heterozygosity_unit) {
+		this.loss_of_heterozygosity_unit = loss_of_heterozygosity_unit;
+	}
 	public Float getTumour_fraction_score() {
 		return tumour_fraction_score;
 	}

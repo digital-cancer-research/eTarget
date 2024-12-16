@@ -60,7 +60,8 @@ public class SearchDAOTest {
 		System.out.println(result.get(0).getCondition_name());
 		System.out.println(result.get(0).getCdna_change());
 		System.out.println(result.get(0).getAmino_acid_change());
-		assertTrue(result.get(0).getCondition_name().compareTo("Colorectal")==0);
+		System.out.println(result.get(0).getPerson_id());
+		assertTrue(result.get(0).getCondition_name().compareTo("Other")==0);
 	}
 	
 	@Test

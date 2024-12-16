@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 
 import org.digitalecmt.etarget.dao.EditLockDAO;
 import org.digitalecmt.etarget.rest.FileAccess;
-import org.digitalecmt.etarget.support.Formater;
+//import org.digitalecmt.etarget.support.Formater;
 import org.digitalecmt.etarget.support.TimepointComparator;
 
 import java.sql.*;
@@ -77,7 +77,7 @@ public class GetSinglePatient extends API {
         String sql = "SELECT * FROM dbo.PATIENTS WHERE person_id = "+personID;
         ResultSet rs = super.getData(sql);
         log.info("after ResutlSet " + Boolean.toString(rs==null));
-        while(rs.next()) {
+        while(rs!=null && rs.next()) {
           // Get the data
           targetID = rs.getString("target_id");
           personAge = rs.getInt("age_at_consent");

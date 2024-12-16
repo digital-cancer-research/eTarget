@@ -90,8 +90,9 @@ public class MutationSelectionDAOImpl extends JdbcDaoSupport implements Mutation
 		List<SelectedGeneVariant> values=null;
 		try {
 			JdbcTemplate template =  getJdbcTemplate();
-			values=template.query(query, new Object[] {personID},
-				new BeanPropertyRowMapper<SelectedGeneVariant>(SelectedGeneVariant.class));
+			values=template.query(query,
+				new BeanPropertyRowMapper<SelectedGeneVariant>(SelectedGeneVariant.class), 
+				personID);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -104,12 +105,13 @@ public class MutationSelectionDAOImpl extends JdbcDaoSupport implements Mutation
 		List<SelectedGeneVariant> values=null;
 		try {
 			JdbcTemplate template =  getJdbcTemplate();
-			values=template.query(queryLatest, new Object[] {personID,personID},
-				new BeanPropertyRowMapper<SelectedGeneVariant>(SelectedGeneVariant.class));
+			values=template.query(queryLatest,
+				new BeanPropertyRowMapper<SelectedGeneVariant>(SelectedGeneVariant.class),
+				personID,personID);
+			log.info("select SELECTED_GENE_VARIANT " + personID + " " + values.size());
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		log.info("select SELECTED_GENE_VARIANT " + personID + " " + values.size());
 		return values;
 	}
 

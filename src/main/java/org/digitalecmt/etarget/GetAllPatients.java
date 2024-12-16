@@ -54,6 +54,7 @@ public class GetAllPatients extends API {
   String userID;
   Integer mo_id;
   String care_site;
+  Boolean discuss;
 
   private static Logger log = Logger.getLogger(GetAllPatients.class.getName());
   // Constructor
@@ -82,8 +83,8 @@ public class GetAllPatients extends API {
     	  
         String sql = "SELECT * FROM dbo.PATIENTS p OUTER APPLY (SELECT  TOP 1 * FROM dbo.MEETING_OUTCOME mo WHERE mo.person_id = p.person_id ORDER BY mo.mo_id DESC) mo ORDER BY consent_date DESC, target_id DESC";
         ResultSet rs = super.getData(sql);
-
-        while(rs.next()) {
+        
+        while(rs!=null && rs.next()) {
           // Get the data
           personID = rs.getInt("person_id");
           targetID = rs.getString("target_id");
@@ -91,10 +92,11 @@ public class GetAllPatients extends API {
           conditionName = rs.getString("condition_name");
           subtypeName = rs.getString("subtype_name");
           consultantName = rs.getString("consultant_name");
-          status = (rs.getString("outcome") == null) ? "Awaiting Discussion": rs.getString("outcome");
+          status = (rs.getString("outcome") == null) ? "Awaiting Outcome": rs.getString("outcome");
           mtbDate = rs.getDate("meeting_date");
           mo_id = rs.getInt("mo_id");
           care_site = rs.getString("care_site_name");
+          discuss = rs.getBoolean("discuss");
 
 
           // Reformat the date
@@ -118,6 +120,7 @@ public class GetAllPatients extends API {
           patient.put("careSite", care_site);
           patient.put("status", status);
           patient.put("mtbDate", mtbDateFormatted);
+          patient.put("discuss", discuss?"true":"false");
           if(isAdmin) {
         	  patient.put("requirePrinting", person_ids.contains(personID)?"true":"false");
           }

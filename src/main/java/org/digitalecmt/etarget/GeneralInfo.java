@@ -44,7 +44,10 @@ import com.google.gson.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
-import de.jollyday.*;
+import de.jollyday.HolidayManager;
+import de.jollyday.HolidayCalendar;
+import de.jollyday.ManagerParameters;
+import de.jollyday.HolidayType;
 
 public class GeneralInfo extends API {
 	
@@ -99,7 +102,7 @@ public class GeneralInfo extends API {
 						+ personID + " ORDER BY PROCEDURE_OCCURRENCE.procedure_start_date ASC";
 				ResultSet rs1 = super.getData(treatmentHistorySQL);
 
-				while (rs1.next()) {
+				while (rs1!=null && rs1.next()) {
 					// Get the data
 					procedureStartDate = rs1.getDate("procedure_start_date");
 					procedureEndDate = rs1.getDate("procedure_end_date");
@@ -172,7 +175,7 @@ public class GeneralInfo extends API {
 						"WHERE specimen.person_id = "+personID + 
 						"AND conceptSpec.specimen_name LIKE '%Tumour%' ORDER BY baseline_number, coalesce(issue_dates.date_issued, '9999-12-12') ASC, gdlRequest.date_requested ASC";
 				ResultSet rs3 = super.getData(sampleTumourSQL);
-
+				if(rs3!=null)
 				while (rs3.next()) {
 					// Get the data
 					tumourSampleDate = rs3.getDate("specimen_date");
@@ -429,7 +432,6 @@ public class GeneralInfo extends API {
 						days++;
 					}
 					while(receivedLD!=null && reportLD!=null && receivedLD.isBefore(reportLD)) {
-						boolean isHoliday = m.isHoliday(receivedLD, (HolidayType) null, "en");
 						if(receivedLD.getDayOfWeek()!=DayOfWeek.SATURDAY &&
 								receivedLD.getDayOfWeek()!=DayOfWeek.SUNDAY &&
 								!m.isHoliday((LocalDate) receivedLD, (HolidayType) null, "en")) {

@@ -94,6 +94,7 @@ public class GenePanelDAOTest {
 		assertTrue(success);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testgetGenePanelMap() {
 		GenePanelDAO genePanelDao=context.getBean(GenePanelDAO.class);

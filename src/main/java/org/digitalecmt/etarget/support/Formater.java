@@ -26,16 +26,17 @@ package org.digitalecmt.etarget.support;
  * #L%
  */
 
-import java.math.RoundingMode;
-import java.text.NumberFormat;
+//import java.math.RoundingMode;
+//import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
+//import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.apache.commons.math3.util.Precision;
 import org.digitalecmt.etarget.dbentities.CopyNumberAlteration;
 import org.digitalecmt.etarget.dbentities.FMSample;
 import org.digitalecmt.etarget.dbentities.GeneName;
@@ -480,6 +481,7 @@ public class Formater {
 		sv.put("functional_effect", shortvariant.getFunctional_effect());
 		sv.put("subclonal", shortvariant.getSubclonal()==null?"-":shortvariant.getSubclonal());
 		sv.put("position", shortvariant.getPosition());
+		sv.put("amino_acid_chage", shortvariant.getAmino_acid_change());	
 		return sv;
 	}
 	
@@ -509,7 +511,7 @@ public class Formater {
 		ra.put("pos1", rarr.getRearr_pos1());
 		ra.put("pos2", rarr.getRearr_pos2());
 		ra.put("number_of_reads", rarr.getRearr_number_of_reads()==null?"-":rarr.getRearr_number_of_reads().toString());
-		ra.put("variant_allele_frequency", rarr.getVariant_allele_frequency()==null?"-" : String.format("%.2f", rarr.getVariant_allele_frequency()));
+		ra.put("variant_allele_frequency", rarr.getVariant_allele_frequency()==null?"Not reported" : String.format("%.2f", rarr.getVariant_allele_frequency()));
 		ra.put("variation_type", rarr.getVariant_type());
 		ra.put("status", rarr.getStatus()==null?"-":rarr.getStatus());
 		ra.put("rearrangement_type", rarr.getRearr_type());
@@ -592,8 +594,15 @@ public class Formater {
 			if(sample.getMicrosatellite_instability_status()==null) {
 				genepanel.put("microsatellite_status", "Not reported");
 			} else {
-				genepanel.put("microsatellite_status", sample.getMicrosatellite_instability_status());
+				genepanel.put("microsatellite_status", sample.getMicrosatellite_instability_status().toUpperCase());
 			}
+			if(sample.getLoss_of_heterozygosity_score()==null) {
+				genepanel.put("loss_of_heterozygosity", "Not reported" );
+			} else {
+				genepanel.put("loss_of_heterozygosity", String.format("%.1f",sample.getLoss_of_heterozygosity_score()));
+				genepanel.put("loss_of_heterozygosity_unit", sample.getLoss_of_heterozygosity_unit());
+			}
+			
 			genepanel.put("mean_exon_depth", sample.getMean_exon_depth()==null?"Not reported":sample.getMean_exon_depth_int());
 			genepanel.put("panel_id", sample.getMeasurement_gene_panel_id());
 			if(sample.getTumour_fraction_score()==null) {
@@ -733,10 +742,10 @@ public class Formater {
 			List<TumourNgs> specimen) {
 		Map<String,Map<String,Map<String,String>>> result = new HashMap<>();
 		Map<String,Map<String,String>> versionMap = null;
-		NumberFormat formatter = NumberFormat.getInstance(Locale.ENGLISH);
-		formatter.setMaximumFractionDigits(2);
-		formatter.setMinimumFractionDigits(2);
-		formatter.setRoundingMode(RoundingMode.HALF_UP); 
+//		NumberFormat formatter = NumberFormat.getInstance(Locale.ENGLISH);
+//		formatter.setMaximumFractionDigits(2);
+//		formatter.setMinimumFractionDigits(2);
+//		formatter.setRoundingMode(RoundingMode.HALF_UP); 
 		for(IHCReport r : ihcReport) {
 			log.info("IHC " + r.getIhc_report_id());
 			Integer specimen_id = r.getSpecimen_id();
@@ -771,12 +780,12 @@ public class Formater {
 				report.put("reportDate", r.getReport_date_formatted());
 				report.put("pdl1_tps", r.getPdl1_tps());
 				report.put("estimated_results", r.getEstimated_results() + ((r.getEstimated_results().toLowerCase().startsWith("no result"))?"":" %"));
-				report.put("cd3_total_tissue_area", r.getCd3_total_tissue_area()==null?"No result":formatter.format(r.getCd3_total_tissue_area()));
-				report.put("cd3_instratumoural", r.getCd3_intratumoural()==null?"No result":formatter.format(r.getCd3_intratumoural()));
-				report.put("cd3_instrastromal", r.getCd3_intrastromal()==null?"No result":formatter.format(r.getCd3_intrastromal()));
-				report.put("cd8_total_tissue_area", r.getCd8_total_tissue_area()==null?"No result":formatter.format(r.getCd8_total_tissue_area()));
-				report.put("cd8_instratumoural", r.getCd8_intratumoural()==null?"No result":formatter.format(r.getCd8_intratumoural()));
-				report.put("cd8_instrastromal", r.getCd8_intrastromal()==null?"No result":formatter.format(r.getCd8_intrastromal()));
+				report.put("cd3_total_tissue_area", r.getCd3_total_tissue_area()==null?"No result":String.format("%.2f",Precision.round(r.getCd3_total_tissue_area(), 2)));
+				report.put("cd3_instratumoural", r.getCd3_intratumoural()==null?"No result":String.format("%.2f",Precision.round(r.getCd3_intratumoural(), 2)));
+				report.put("cd3_instrastromal", r.getCd3_intrastromal()==null?"No result":String.format("%.2f",Precision.round(r.getCd3_intrastromal(), 2)));
+				report.put("cd8_total_tissue_area", r.getCd8_total_tissue_area()==null?"No result":String.format("%.2f",Precision.round(r.getCd8_total_tissue_area(), 2)));
+				report.put("cd8_instratumoural", r.getCd8_intratumoural()==null?"No result":String.format("%.2f",Precision.round(r.getCd8_intratumoural(), 2)));
+				report.put("cd8_instrastromal", r.getCd8_intrastromal()==null?"No result":String.format("%.2f",Precision.round(r.getCd8_intrastromal(),2)));
 				report.put("comments", r.getComments());
 				report.put("pre_clin_id", r.getPreclin_id());
 				String filecd3=r.getPreclin_id()+"_CD3.jpg";
@@ -880,21 +889,24 @@ public class Formater {
 	}
 	
 	public static void cleanIHCTumour(Map<String,Map<String,Map<String,String>>> ihcReport) {
-		Integer baseline=2;
 		Map<String,Map<String,String>> report=null;
-		while((report = ihcReport.get(baseline.toString()))!=null) {
-			log.info(report.keySet().toString());
+		String[] keys= ihcReport.keySet().toArray(new String[0]);
+		for(String bl : keys) {
+			if(bl.compareTo("1")==0) {
+				continue;
+			}
+			report = ihcReport.get(bl);
+			log.info("IHC clean up" +report.keySet().toString());
 			Map<String,String> version=report.get("1");
 			if(version==null) {
-				baseline++;
 				continue;
 			}
 			Boolean hasMessage = version.containsKey("message");
+			log.info("IHC has message " + hasMessage);
+			log.info("IHC " + version.keySet());
 			if(hasMessage==Boolean.TRUE) {
-				ihcReport.remove(baseline.toString());
+				ihcReport.remove(bl);
 			}
-			baseline++;
-					
 		}
 	}
 }

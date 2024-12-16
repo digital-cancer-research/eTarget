@@ -34,12 +34,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+
 
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -47,16 +45,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.digitalecmt.etarget.API;
 
 @Path("/component")
-public class Component extends Application {
+public class Component {
 	private static final Logger log = Logger.getLogger(Component.class.getName());
 	private ResourceBundle resource,application;
 	private String path="";
@@ -85,7 +83,7 @@ public class Component extends Application {
 		API api = new API();
 		
 		log.info("Rest Componant called for (1) " + component);
-		
+		loggedInUserID = StringEscapeUtils.unescapeHtml4(loggedInUserID);
 		if (!api.isUserPermittedComponent(loggedInUserID, component)) {
 			// Stop the request if user doesn't have permission for this API or web
 			// component
@@ -128,7 +126,7 @@ public class Component extends Application {
 		API api = new API();
 		
 		log.info("Rest Componant called for (2) " + component);
-		
+		loggedInUserID = StringEscapeUtils.unescapeHtml4(loggedInUserID);
 		if (!api.isUserPermittedComponent(loggedInUserID, component)  || !api.checkAccessPermission(component, loggedInUserID, personID)) {
 			// Stop the request if user doesn't have permission for this API or web
 			// component
@@ -170,7 +168,7 @@ public class Component extends Application {
 		API api = new API();
 		
 		log.info("Rest Componant called for (3) " + component + " " + type);
-		
+		loggedInUserID = StringEscapeUtils.unescapeHtml4(loggedInUserID);
 		if (!api.isUserPermittedComponent(loggedInUserID, component)  || !api.checkAccessPermission(component, loggedInUserID, personID)) {
 			// Stop the request if user doesn't have permission for this API or web
 			// component

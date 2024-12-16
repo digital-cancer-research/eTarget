@@ -52,7 +52,7 @@ public class FoundationMedicineDAOImpl implements FoundationMedicineDAO {
 			+ "rearr_description, rearr_in_frame, rearr_gene_2_name, rearr_pos1, rearr_pos2, status, rearr_number_of_reads, "
 			+ "rearr_gene_1_name, variant_type, baseline_number as baseline, rearr_type, variant_allele_frequency";
 	private String sample ="measurement_gene_panel_id, specimen_id, MEASUREMENT_GENE_PANEL.data_source_concept_id, percent_exons_100x, mean_exon_depth, microsatellite_instability_status, microsatellite_instability_score, tmb_unit, "
-			+ "tmb_status, tmb_score, run_number, tumour_fraction_score, tumour_fraction_unit";
+			+ "tmb_status, tmb_score, run_number, tumour_fraction_score, tumour_fraction_unit, loss_of_heterozygosity_score, loss_of_heterozygosity_unit";
 
 	private String shortVariantSelection = "MEASUREMENT_GENE_VARIANT.measurement_gene_variant_id, MEASUREMENT_GENE_VARIANT.measurement_gene_panel_id, functional_effect, "
 			+ "gene_name, cdna_change, read_depth, variant_allele_frequency, position, amino_acid_change, transcript, variant_type, status, SPECIMEN.baseline_number as baseline, subclonal";
@@ -66,6 +66,12 @@ public class FoundationMedicineDAOImpl implements FoundationMedicineDAO {
 			"LEFT JOIN MEASUREMENT_GENE_PANEL on MEASUREMENT_GENE_VARIANT.measurement_gene_panel_id=MEASUREMENT_GENE_PANEL.measurement_gene_panel_id\n" + 
 			"LEFT JOIN SPECIMEN on MEASUREMENT_GENE_PANEL.specimen_id=SPECIMEN.specimen_id \n" + 
 			"where MEASUREMENT_GENE_VARIANT.read_depth IS NOT NULL and  MEASUREMENT_GENE_VARIANT.measurement_gene_panel_id=:measurement_gene_panel_id ";
+	private String getSignificantShortVariantsSQL ="SELECT " + shortVariantSelection + " FROM MEASUREMENT_GENE_VARIANT\n" + 
+			"LEFT JOIN CONCEPT_GENE on MEASUREMENT_GENE_VARIANT.gene_concept_id=CONCEPT_GENE.gene_concept_id\n" + 
+			"LEFT JOIN MEASUREMENT_GENE_PANEL on MEASUREMENT_GENE_VARIANT.measurement_gene_panel_id=MEASUREMENT_GENE_PANEL.measurement_gene_panel_id\n" + 
+			"LEFT JOIN SPECIMEN on MEASUREMENT_GENE_PANEL.specimen_id=SPECIMEN.specimen_id \n" + 
+			"where MEASUREMENT_GENE_VARIANT.read_depth IS NOT NULL and  MEASUREMENT_GENE_VARIANT.measurement_gene_panel_id=:measurement_gene_panel_id "
+			+ "and (MEASUREMENT_GENE_VARIANT.status!='unknown' and MEASUREMENT_GENE_VARIANT.status!='ambiguous' or MEASUREMENT_GENE_VARIANT.status is null)";
 	private String getShortVariantsByPersonId = "SELECT " + shortVariantSelection + " FROM MEASUREMENT_GENE_VARIANT \n" + 
 			"LEFT JOIN CONCEPT_GENE on MEASUREMENT_GENE_VARIANT.gene_concept_id=CONCEPT_GENE.gene_concept_id\n" + 
 			"LEFT JOIN MEASUREMENT_GENE_PANEL on MEASUREMENT_GENE_VARIANT.measurement_gene_panel_id=MEASUREMENT_GENE_PANEL.measurement_gene_panel_id\n" + 
@@ -85,6 +91,12 @@ public class FoundationMedicineDAOImpl implements FoundationMedicineDAO {
 			"LEFT JOIN MEASUREMENT_GENE_PANEL on MEASUREMENT_GENE_VARIANT.measurement_gene_panel_id=MEASUREMENT_GENE_PANEL.measurement_gene_panel_id\n" +
 			"LEFT JOIN SPECIMEN on MEASUREMENT_GENE_PANEL.specimen_id=SPECIMEN.specimen_id "+
 			"where MEASUREMENT_GENE_VARIANT.variant_type='copy_number_alteration' and  MEASUREMENT_GENE_VARIANT.measurement_gene_panel_id=:measurement_gene_panel_id ";
+	private String getSignificantCopyNumberAlterationSQL ="SELECT " + copyNumberalteration + " FROM MEASUREMENT_GENE_VARIANT\n" + 
+			"LEFT JOIN CONCEPT_GENE on MEASUREMENT_GENE_VARIANT.gene_concept_id=CONCEPT_GENE.gene_concept_id\n" + 
+			"LEFT JOIN MEASUREMENT_GENE_PANEL on MEASUREMENT_GENE_VARIANT.measurement_gene_panel_id=MEASUREMENT_GENE_PANEL.measurement_gene_panel_id\n" +
+			"LEFT JOIN SPECIMEN on MEASUREMENT_GENE_PANEL.specimen_id=SPECIMEN.specimen_id "+
+			"where MEASUREMENT_GENE_VARIANT.variant_type='copy_number_alteration' and  MEASUREMENT_GENE_VARIANT.measurement_gene_panel_id=:measurement_gene_panel_id \n" +
+			"and (MEASUREMENT_GENE_VARIANT.status!='unknown' and MEASUREMENT_GENE_VARIANT.status!='ambiguous' or MEASUREMENT_GENE_VARIANT.status is null)";
 	private String getCopyNumberAlterationByPersonId = "SELECT " + copyNumberalteration + " FROM MEASUREMENT_GENE_VARIANT \n" + 
 			"LEFT JOIN CONCEPT_GENE on MEASUREMENT_GENE_VARIANT.gene_concept_id=CONCEPT_GENE.gene_concept_id\n" + 
 			"LEFT JOIN MEASUREMENT_GENE_PANEL on MEASUREMENT_GENE_VARIANT.measurement_gene_panel_id=MEASUREMENT_GENE_PANEL.measurement_gene_panel_id\n" + 
@@ -105,6 +117,13 @@ public class FoundationMedicineDAOImpl implements FoundationMedicineDAO {
 			"LEFT JOIN MEASUREMENT_GENE_PANEL on MEASUREMENT_GENE_VARIANT.measurement_gene_panel_id=MEASUREMENT_GENE_PANEL.measurement_gene_panel_id\n" + 
 			"LEFT JOIN SPECIMEN on MEASUREMENT_GENE_PANEL.specimen_id=SPECIMEN.specimen_id \n" + 
 			"where MEASUREMENT_GENE_VARIANT.rearr_pos1 IS NOT NULL and  MEASUREMENT_GENE_VARIANT.measurement_gene_panel_id=:measurement_gene_panel_id ";
+	private String getSignificantRearrangementsSQL ="SELECT " + rearrangementSelection + " FROM MEASUREMENT_GENE_VARIANT\n" + 
+			"LEFT JOIN CONCEPT_GENE as cg1 on MEASUREMENT_GENE_VARIANT.rearr_gene_1=cg1.gene_concept_id\n" + 
+			"LEFT JOIN CONCEPT_GENE as cg2 on MEASUREMENT_GENE_VARIANT.rearr_gene_2=cg2.gene_concept_id\n" + 
+			"LEFT JOIN MEASUREMENT_GENE_PANEL on MEASUREMENT_GENE_VARIANT.measurement_gene_panel_id=MEASUREMENT_GENE_PANEL.measurement_gene_panel_id\n" + 
+			"LEFT JOIN SPECIMEN on MEASUREMENT_GENE_PANEL.specimen_id=SPECIMEN.specimen_id \n" + 
+			"where MEASUREMENT_GENE_VARIANT.rearr_pos1 IS NOT NULL and  MEASUREMENT_GENE_VARIANT.measurement_gene_panel_id=:measurement_gene_panel_id\n" +
+			"and (MEASUREMENT_GENE_VARIANT.status!='unknown' and MEASUREMENT_GENE_VARIANT.status!='ambiguous' or MEASUREMENT_GENE_VARIANT.status is null)";
 	private String getRearrangementsByPersonId = "SELECT " + rearrangementSelection + " FROM MEASUREMENT_GENE_VARIANT \n" + 
 			"LEFT JOIN CONCEPT_GENE as cg1 on MEASUREMENT_GENE_VARIANT.rearr_gene_1=cg1.gene_concept_id\n" + 
 			"LEFT JOIN CONCEPT_GENE as cg2 on MEASUREMENT_GENE_VARIANT.rearr_gene_2=cg2.gene_concept_id\n" + 
@@ -125,7 +144,7 @@ public class FoundationMedicineDAOImpl implements FoundationMedicineDAO {
 			"SPECIMEN.specimen_concept_id, SPECIMEN.baseline_number, t1.run_number, SPECIMEN.tumour_id, t1.tmb_score, \n" + 
 			"t1.tmb_status, t1.tmb_unit, t1.microsatellite_instability_score, \n" + 
 			"t1.microsatellite_instability_status, t1.mean_exon_depth, \n" + 
-			"t1.percent_exons_100x, t1.tumour_fraction_score, t1.tumour_fraction_unit, SPECIMEN.preclin_id";
+			"t1.percent_exons_100x, t1.tumour_fraction_score, t1.tumour_fraction_unit, t1.loss_of_heterozygosity_score, t1.loss_of_heterozygosity_unit, SPECIMEN.preclin_id";
 	private String getSpecimenSamplesBlood = "SELECT "+samples+" from SPECIMEN\n" + 
 			"LEFT JOIN (SELECT "+sample+" from MEASUREMENT_GENE_PANEL left join CONCEPT_DATA_SOURCES on MEASUREMENT_GENE_PANEL.data_source_concept_id=\n" + 
 			"CONCEPT_DATA_SOURCES.data_source_concept_id where panel_name='foundationmedicine' and ngs_run='FM') as t1 on t1.specimen_id=SPECIMEN.specimen_id\n" + 
@@ -161,6 +180,18 @@ public class FoundationMedicineDAOImpl implements FoundationMedicineDAO {
 		}
 		return values;
 	}
+	@Override
+	public List<ShortVariant> getSignificantShortVariants(Integer measurement_gene_panel_id) {
+		List<ShortVariant> values = null;
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("measurement_gene_panel_id", measurement_gene_panel_id);
+		try {
+			values=namedParameterJdbcTemplate.query(getSignificantShortVariantsSQL, parameters, new BeanPropertyRowMapper<ShortVariant>(ShortVariant.class));
+		} catch (Exception e) {
+			log.log(Level.SEVERE, "getShortVariantsSQL", e);
+		}
+		return values;
+	}
 
 	@Override
 	public List<CopyNumberAlteration> getCopyNumberAlterations(Integer measurement_gene_panel_id) {
@@ -174,6 +205,18 @@ public class FoundationMedicineDAOImpl implements FoundationMedicineDAO {
 		}
 		return values;
 	}
+	@Override
+	public List<CopyNumberAlteration> getSignificantCopyNumberAlterations(Integer measurement_gene_panel_id) {
+		List<CopyNumberAlteration> values = null;
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("measurement_gene_panel_id", measurement_gene_panel_id);
+		try {
+			values=namedParameterJdbcTemplate.query(getSignificantCopyNumberAlterationSQL, parameters, new BeanPropertyRowMapper<CopyNumberAlteration>(CopyNumberAlteration.class));
+		} catch (Exception e) {
+			log.log(Level.SEVERE, "getShortVariantsSQL", e);
+		}
+		return values;
+	}
 
 	@Override
 	public List<Rearrangement> getRearrangements(Integer measurement_gene_panel_id) {
@@ -182,6 +225,19 @@ public class FoundationMedicineDAOImpl implements FoundationMedicineDAO {
 		parameters.addValue("measurement_gene_panel_id", measurement_gene_panel_id);
 		try {
 			values=namedParameterJdbcTemplate.query(getRearrangementsSQL, parameters, new BeanPropertyRowMapper<Rearrangement>(Rearrangement.class));
+		} catch (Exception e) {
+			log.log(Level.SEVERE, "getShortVariantsSQL", e);
+		}
+		return values;
+	}
+	
+	@Override
+	public List<Rearrangement> getSignificantRearrangements(Integer measurement_gene_panel_id) {
+		List<Rearrangement> values = null;
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("measurement_gene_panel_id", measurement_gene_panel_id);
+		try {
+			values=namedParameterJdbcTemplate.query(getSignificantRearrangementsSQL, parameters, new BeanPropertyRowMapper<Rearrangement>(Rearrangement.class));
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "getShortVariantsSQL", e);
 		}

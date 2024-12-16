@@ -26,8 +26,6 @@ package org.digitalecmt.etarget.rest;
  * #L%
  */
 
-import javax.ws.rs.core.Application;
-
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Assert;
@@ -36,7 +34,7 @@ import org.junit.Test;
 public class GenePanelsTest extends JerseyTest {
 
 	@Override
-    protected Application configure() {
+    protected javax.ws.rs.core.Application configure() {
         return new ResourceConfig(GenePanels.class);
     }
 	

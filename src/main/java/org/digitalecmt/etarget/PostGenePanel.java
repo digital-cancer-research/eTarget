@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.digitalecmt.etarget.dao.GenePanelDAO;
-import org.digitalecmt.etarget.dao.GenePanelDAOImpl;
 import org.digitalecmt.etarget.dbentities.Genes;
 
 import com.google.gson.Gson;
